@@ -1,0 +1,91 @@
+# Docker Compose - Bibliotheque Numerique DIT
+# Lancement : docker compose up --build
+
+services:
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: bibliotheque-db
+    environment:
+      POSTGRES_USER:     user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB:       bibliotheque
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d bibliotheque"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bibliotheque-network
+
+  service-livres:
+    build: ./service-livres
+    container_name: bibliotheque-livres
+    environment:
+      DATABASE_URL: postgresql://user:password@postgres:5432/bibliotheque
+    ports:
+      - "8001:8001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - bibliotheque-network
+    restart: unless-stopped
+
+  service-utilisateurs:
+    build: ./service-utilisateurs
+    container_name: bibliotheque-utilisateurs
+    environment:
+      DATABASE_URL: postgresql://user:password@postgres:5432/bibliotheque
+    ports:
+      - "8002:8002"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - bibliotheque-network
+    restart: unless-stopped
+
+  service-emprunts:
+    build: ./service-emprunts
+    container_name: bibliotheque-emprunts
+    environment:
+      DATABASE_URL:             postgresql://user:password@postgres:5432/bibliotheque
+      SERVICE_LIVRES_URL:       http://service-livres:8001
+      SERVICE_UTILISATEURS_URL: http://service-utilisateurs:8002
+    ports:
+      - "8003:8003"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      service-livres:
+        condition: service_started
+      service-utilisateurs:
+        condition: service_started
+    networks:
+      - bibliotheque-network
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: bibliotheque-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - service-livres
+      - service-utilisateurs
+      - service-emprunts
+    networks:
+      - bibliotheque-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  bibliotheque-network:
+    driver: bridge
