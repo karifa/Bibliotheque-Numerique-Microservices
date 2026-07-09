@@ -38,8 +38,8 @@ Projet DevOps - Master 1 Intelligence Artificielle - Dakar Institute of Technolo
 
 ```bash
 # 1. Cloner le projet
-git clone https://github.com/Sihiney/bibliotheque-dit.git
-cd bibliotheque-dit
+git clone https://github.com/karifa/Bibliotheque-Numerique-Microservices.git
+cd Bibliotheque-Numerique-Microservices
 
 # 2. Lancer toute l'application
 docker compose up --build
