@@ -1,14 +1,13 @@
-# Bibliothèque Numérique - DIT
+# Bibliothèque Numérique Microservices - DIT
 
-Plateforme de gestion de ressources documentaires basée sur une architecture microservices.
+Plateforme de gestion de la bibliothèque numerique basée sur une architecture microservices.
 
 Projet DevOps - Master 1 Intelligence Artificielle - Dakar Institute of Technology
 
-**Groupe 2 :**
-- AHOGA Josias
-- BAH Mamoudou
-- BAMBA Yannick
-- DIOP Seynabou
+**Groupe 4 :**
+- KOUYATE Karifa
+- XXX. Daniel
+- ...........
 
 ---
 
