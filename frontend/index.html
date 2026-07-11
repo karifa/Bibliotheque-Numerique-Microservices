@@ -126,7 +126,8 @@ table{width:100%;border-collapse:collapse}thead tr{background:var(--light)}thead
 <div class="form-group"><label class="form-label">Mot de passe</label><input class="form-input" v-model="loginF.mdp" type="password" placeholder="••••••••" @keyup.enter="doLogin"></div>
 <a href="#" @click.prevent="showForgot=!showForgot" style="display:block;text-align:right;font-size:12px;color:var(--dit-l);font-weight:500;margin-top:-6px;margin-bottom:14px;text-decoration:none">Mot de passe oublié ?</a>
 <div v-if="showForgot" class="alert" style="background:var(--dit-bg);color:var(--dit);font-size:12px;margin-bottom:14px">Pour réinitialiser votre mot de passe, veuillez contacter l'administrateur de la bibliothèque à <strong>admin@dit.sn</strong> avec votre email d'inscription.</div>
-<button class="btn btn-dit" @click="doLogin" :disabled="authLoad" style="margin-top:8px">{{ authLoad?'Connexion...':'Se connecter' }}</button>
+<button class="btn btn-dit" @click="doLogin" :disabled="authLoad"
+ style="margin-top:8px">{{ authLoad?'Connexion...':'Se connecter' }}</button>
 <div class="divider">ou</div>
 <p style="text-align:center;font-size:12px;color:var(--muted)">Pas de compte ? <a href="#" @click.prevent="authMode='register';authErr=''" style="color:var(--dit);font-weight:600;text-decoration:none">Inscrivez-vous</a></p>
 </template>
@@ -156,7 +157,8 @@ table{width:100%;border-collapse:collapse}thead tr{background:var(--light)}thead
 <div class="sidebar-overlay" :class="{open:sideOpen}" @click="sideOpen=false"></div>
 <div class="app-layout">
 <aside class="sidebar" :class="{open:sideOpen}">
-<div class="brand"><img :src="LOGO" alt="DIT"/><div class="brand-text"><h1>Bibliothèque Numérique</h1><span>Plateforme DIT</span></div></div>
+<div class="brand"><img :src="LOGO" alt="DIT"/><div class="brand-text"><h1>Bibliothèque Numérique</h1><span>Plateforme DIT</span>
+</div></div>
 <nav>
 <div class="nav-section">Navigation</div>
 <a :class="{active:pg==='dashboard'}" @click="go('dashboard')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Tableau de bord</a>
