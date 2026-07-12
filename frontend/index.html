@@ -16,14 +16,14 @@
 <div class="auth-container">
 <div class="auth-brand">
 <img :src="LOGO" alt="DIT"/>
-<h1>Bienvenue à la <span>Bibliothèque Numérique</span> du DIT</h1>
-<p style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.7">Votre plateforme de ressources documentaires.</p>
+<h1>Bienvenue à la <span>Bibliothèque Numérique</span> du DIT - Dakar Institute of Technology </h1>
+<p style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.7">Votre plateforme de gestion de bibliothèque numérique</p>
 </div>
 <div class="auth-card">
 <h2 v-if="authMode==='login'">Connexion</h2>
 <h2 v-else>Inscription</h2>
-<p class="auth-sub" v-if="authMode==='login'">Connectez-vous avec votre email et mot de passe.</p>
-<p class="auth-sub" v-else>Créez votre compte pour accéder à la bibliothèque.</p>
+<p class="auth-sub" v-if="authMode==='login'">Connectez-vous avec votre email et mot de passe</p>
+<p class="auth-sub" v-else>Créez votre compte</p>
 <div class="auth-tabs">
 <button class="auth-tab" :class="{active:authMode==='login'}" @click="authMode='login';authErr=''">Connexion</button>
 <button class="auth-tab" :class="{active:authMode==='register'}" @click="authMode='register';authErr=''">Inscription</button>
@@ -34,28 +34,28 @@
 <div class="form-group"><label class="form-label">Email</label><input class="form-input" v-model="loginF.email" type="email" placeholder="josias@dit.sn"></div>
 <div class="form-group"><label class="form-label">Mot de passe</label><input class="form-input" v-model="loginF.mdp" type="password" placeholder="••••••••" @keyup.enter="doLogin"></div>
 <a href="#" @click.prevent="showForgot=!showForgot" style="display:block;text-align:right;font-size:12px;color:var(--dit-l);font-weight:500;margin-top:-6px;margin-bottom:14px;text-decoration:none">Mot de passe oublié ?</a>
-<div v-if="showForgot" class="alert" style="background:var(--dit-bg);color:var(--dit);font-size:12px;margin-bottom:14px">Pour réinitialiser votre mot de passe, veuillez contacter l'administrateur de la bibliothèque à <strong>admin@dit.sn</strong> avec votre email d'inscription.</div>
+<div v-if="showForgot" class="alert" style="background:var(--dit-bg);color:var(--dit);font-size:12px;margin-bottom:14px">Mot de passe oublié ? Écrivez à l'administrateur de la bibliothèque à <strong>admin@dit.sn</strong> avec votre email d'inscription.</div>
 <button class="btn btn-dit" @click="doLogin" :disabled="authLoad" style="margin-top:8px">{{ authLoad?'Connexion...':'Se connecter' }}</button>
 <div class="divider">ou</div>
-<p style="text-align:center;font-size:12px;color:var(--muted)">Pas de compte ? <a href="#" @click.prevent="authMode='register';authErr=''" style="color:var(--dit);font-weight:600;text-decoration:none">Inscrivez-vous</a></p>
+<p style="text-align:center;font-size:12px;color:var(--muted)">Vous n'avez pas de compte ? <a href="#" @click.prevent="authMode='register';authErr=''" style="color:var(--dit);font-weight:600;text-decoration:none">Inscrivez-vous</a></p>
 </template>
 
 <template v-if="authMode==='register'">
-<div class="form-row"><div class="form-group"><label class="form-label">Nom</label><input class="form-input" v-model="regF.nom" placeholder="AHOGA"></div><div class="form-group"><label class="form-label">Prénom</label><input class="form-input" v-model="regF.prenom" placeholder="Josias"></div></div>
+<div class="form-row"><div class="form-group"><label class="form-label">Nom</label><input class="form-input" v-model="regF.nom" placeholder="AHOGA"></div><div class="form-group"><label class="form-label">Prénom(s)</label><input class="form-input" v-model="regF.prenom" placeholder="Josias"></div></div>
 <div class="form-group"><label class="form-label">Email</label><input class="form-input" v-model="regF.email" type="email" placeholder="josias@dit.sn"></div>
 <div class="form-group"><label class="form-label">Mot de passe</label><input class="form-input" v-model="regF.mdp" type="password" placeholder="Minimum 6 caractères"></div>
 <div class="form-group"><label class="form-label">Confirmer le mot de passe</label><input class="form-input" v-model="regF.mdp2" type="password" placeholder="Retapez le mot de passe"></div>
 <div v-if="regF.mdp2&&regF.mdp!==regF.mdp2" class="alert alert-danger" style="padding:8px 12px;font-size:12px">Les mots de passe ne correspondent pas</div>
 <div class="form-row"><div class="form-group"><label class="form-label">Téléphone *</label><input class="form-input" v-model="regF.telephone" placeholder="+221 77 123 45 67"></div>
 <div class="form-group"><label class="form-label">Vous êtes</label><select class="form-select" v-model="regF.type"><option value="etudiant">Étudiant(e)</option><option value="professeur">Enseignant(e)</option></select></div></div>
-<div class="form-group" v-if="regF.type==='etudiant'"><label class="form-label">Matricule étudiant *</label><input class="form-input" v-model="regF.matricule" placeholder="Ex: NE2510081"></div>
+<div class="form-group" v-if="regF.type==='etudiant'"><label class="form-label">Matricule étudiant *</label><input class="form-input" v-model="regF.matricule" placeholder="Ex: AA1231122"></div>
 <template v-if="regF.type!=='etudiant'">
-<div class="form-row"><div class="form-group"><label class="form-label">Type de pièce *</label><select class="form-select" v-model="regF.piece_type"><option value="CNI">CNI</option><option value="Passeport">Passeport</option><option value="Autre">Autre</option></select></div>
+<div class="form-row"><div class="form-group"><label class="form-label">Type de pièce *</label><select class="form-select" v-model="regF.piece_type"><option value="CNI">Carte Nationale Identité (CNI)</option><option value="Passeport">Passeport</option><option value="Autre">Autre</option></select></div>
 <div class="form-group"><label class="form-label">N° pièce *</label><input class="form-input" v-model="regF.piece_num" placeholder="Ex: SN-123456789"></div></div>
 </template>
 <button class="btn btn-dit" @click="doRegister" :disabled="authLoad" style="margin-top:8px">{{ authLoad?'Inscription...':'Créer mon compte' }}</button>
 <div class="divider">ou</div>
-<p style="text-align:center;font-size:12px;color:var(--muted)">Déjà inscrit ? <a href="#" @click.prevent="authMode='login';authErr=''" style="color:var(--dit);font-weight:600;text-decoration:none">Connectez-vous</a></p>
+<p style="text-align:center;font-size:12px;color:var(--muted)">Déjà inscrit ? <a href="#" @click.prevent="authMode='login';authErr=''" style="color:var(--dit);font-weight:600;text-decoration:none">Se connecter</a></p>
 </template>
 </div></div></div>
 
@@ -80,12 +80,12 @@
 
 <!-- DASHBOARD ADMIN -->
 <section v-if="pg==='dashboard'&&isAdmin">
-<div class="hero fade-up"><div><h2>Bienvenue, {{ user.prenom }} !</h2><p>Gérez la bibliothèque : ajoutez des livres, validez les emprunts et suivez les retards.</p></div><div class="hero-date">{{ fDate }}</div></div>
+<div class="hero fade-up"><div><h2>Bienvenue, {{ user.prenom }} !</h2><p>Tout pour gérer votre bibliothèque : catalogue, emprunts et retards, au même endroit.</p></div><div class="hero-date">{{ fDate }}</div></div>
 <div class="stats-row">
 <div class="stat-tile fade-up d1" @click="go('livres')"><div class="stat-icon ic-dit"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg></div><div class="stat-label">Livres</div><div class="stat-value">{{ ds.livres }}</div></div>
 <div class="stat-tile fade-up d2" @click="go('utilisateurs')"><div class="stat-icon ic-green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="stat-label">Membres</div><div class="stat-value">{{ ds.membres }}</div></div>
 <div class="stat-tile fade-up d3" @click="go('emprunts')"><div class="stat-icon ic-amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg></div><div class="stat-label">Emprunts en cours</div><div class="stat-value">{{ ds.enCours }}</div></div>
-<div class="stat-tile fade-up d4" @click="go('retards')"><div class="stat-icon ic-red"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="stat-label">Retards</div><div class="stat-value">{{ ds.retards }}</div></div>
+<div class="stat-tile fade-up d4" @click="go('retards')"><div class="stat-icon ic-red"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="stat-label">Emprunts en Retards</div><div class="stat-value">{{ ds.retards }}</div></div>
 <div class="stat-tile fade-up d5" @click="go('emprunts');empTab='attente'" style="position:relative"><div class="stat-icon" style="background:#fff3e0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="stat-label">En attente</div><div class="stat-value" :style="ds.enAttente>0?'color:#f59e0b':''">{{ ds.enAttente }}</div><span v-if="ds.enAttente>0" style="position:absolute;top:10px;right:10px;background:#ef4444;color:white;border-radius:99px;font-size:10px;font-weight:700;padding:2px 7px">!</span></div>
 </div>
 <div class="split">
@@ -100,7 +100,7 @@
 <div>
 <div class="side-card fade-up d3">
 <h4>Validation automatique</h4>
-<p>{{ autoValid ? "Les emprunts sont validés sans intervention manuelle" : "Chaque emprunt doit être validé manuellement par l'admin" }}</p>
+<p>{{ autoValid ? "Chaque emprunt est traité automatiquement, sans action de votre part." : "Chaque emprunt doit être validé manuellement par l'admin" }}</p>
 <div class="toggle-row"><span style="font-size:12px;color:var(--muted);font-weight:600">Statut</span><div class="toggle" :class="{on:autoValid}" @click="toggleAutoValid()"></div></div>
 </div>
 <div class="side-card fade-up d4" v-if="ds.retards>0">
@@ -111,7 +111,7 @@
 </div>
 </section>
 
-<!-- DASHBOARD ÉTUDIANT/PROF -->
+<!-- DASHBOARD ÉTUDIANT & PROF -->
 <section v-if="pg==='dashboard'&&!isAdmin">
 <div class="hero fade-up"><div><h2>Bienvenue, {{ user.prenom }} !</h2><p>Consultez les livres disponibles et gérez vos emprunts.</p></div><div class="hero-date">{{ fDate }}</div></div>
 <div class="stats-grid">
