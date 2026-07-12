@@ -6,8 +6,14 @@ Projet DevOps - Master 1 Intelligence Artificielle - Dakar Institute of Technolo
 
 **Groupe 4 :**
 - KOUYATE Karifa
-- XXX. Daniel
-- ...........
+- Ange Yok
+- Daniel Lelano
+- Mokam Blandine
+- Dominique Fotsing
+- Gadji Mahamat
+- Pasteur Beati
+- Sylvestre Akowanou
+
 
 ---
 
