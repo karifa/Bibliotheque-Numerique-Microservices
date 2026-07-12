@@ -1,5 +1,4 @@
 // Pipeline CI/CD - Bibliotheque Numerique DIT
-// Groupe 2 - Master 1 IA - Dakar Institute of Technology
 // Compatible Windows et Linux
 
 pipeline {
@@ -297,7 +296,7 @@ pipeline {
         }
 
         always {
-            echo 'Pipeline termine - Groupe 2 DIT M1 IA'
+            echo 'Pipeline termine - Groupe 4 DIT M1 IA'
         }
     }
 }
