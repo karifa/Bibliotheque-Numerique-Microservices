@@ -4,10 +4,16 @@ Plateforme de gestion de la bibliothèque numerique basée sur une architecture 
 
 Projet DevOps - Master 1 Intelligence Artificielle - Dakar Institute of Technology
 
-**Groupe 4 :**
-- KOUYATE Karifa
-- XXX. Daniel
-- ...........
+**Groupe 5 :**
+GAMARADINE MAHAMAT SAMBO (Mr)
+KOUYATE Karifa (Mr)
+LELANO Daniel (Mr)
+GADJI Mahamat (Mr)
+AKOWANOU Sylvestre (Mr)
+MOKAM Blandine (Mme)
+FOTSING SOUOP Dominique (Mr)
+BEATI Pasteur Emmanuel (Mr)
+MAKOYEL YOKARA Marie-Ange (Mme)
 
 ---
 
