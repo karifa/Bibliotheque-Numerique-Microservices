@@ -9,7 +9,7 @@ class RegisterRequest(BaseModel):
     prenom: str
     email: str
     mot_de_passe: str
-    telephone: Optional[str] = None
+    telephone: str 
     type: TypeUtilisateur
     matricule: Optional[str] = None
     piece_identite_type: Optional[str] = None
