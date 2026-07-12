@@ -61,49 +61,59 @@
 
 <!-- ═══ APP ═══ -->
 <template v-if="user">
-<button class="hamburger" @click="sideOpen=!sideOpen"><svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></button>
-<div class="sidebar-overlay" :class="{open:sideOpen}" @click="sideOpen=false"></div>
-<div class="app-layout">
-<aside class="sidebar" :class="{open:sideOpen}">
-<div class="brand"><img :src="LOGO" alt="DIT"/><div class="brand-text"><h1>Bibliothèque Numérique</h1><span>Plateforme DIT</span></div></div>
-<nav>
-<div class="nav-section">Navigation</div>
-<a :class="{active:pg==='dashboard'}" @click="go('dashboard')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Tableau de bord</a>
-<div class="nav-section">Gestion</div>
+<header class="topbar">
+<div class="tb-brand"><img :src="LOGO" alt="DIT"/><div class="tb-brand-text"><strong>Bibliothèque Numérique</strong><span>Plateforme DIT</span></div></div>
+<nav class="tb-nav">
+<a :class="{active:pg==='dashboard'}" @click="go('dashboard')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Accueil</a>
 <a :class="{active:pg==='livres'}" @click="go('livres')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg>Livres</a>
 <a v-if="isAdmin" :class="{active:pg==='utilisateurs'}" @click="go('utilisateurs')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Utilisateurs</a>
 <a :class="{active:pg==='emprunts'}" @click="go('emprunts')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>Emprunts</a>
 <a v-if="isAdmin" :class="{active:pg==='retards'}" @click="go('retards')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Retards<span class="nav-badge" v-if="retC>0">{{ retC }}</span></a>
 </nav>
-<div class="sidebar-footer">
-<div class="user-info"><div class="user-avatar">{{ uInit }}</div><div><div class="user-name">{{ user.prenom }} {{ user.nom }}</div><div class="user-role-label">{{ roleLabel }}</div></div></div>
-<button class="logout-btn" @click="logout">Se déconnecter</button>
+<div class="tb-user">
+<div class="tb-avatar">{{ uInit }}</div>
+<div class="tb-user-text"><strong>{{ user.prenom }} {{ user.nom }}</strong><span>{{ roleLabel }}</span></div>
+<button class="tb-logout" @click="logout" title="Se déconnecter"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
 </div>
-</aside>
+</header>
 <main class="main-content">
 
 <!-- DASHBOARD ADMIN -->
 <section v-if="pg==='dashboard'&&isAdmin">
-<div class="hero fade-up"><h2>Bienvenue, {{ user.prenom }} !</h2><p>Gérez la bibliothèque : ajoutez des livres, validez les emprunts et suivez les retards.</p><div class="hero-date">{{ fDate }}</div></div>
-<div class="stats-grid">
-<div class="stat-card fade-up d1" @click="go('livres')"><div class="stat-icon ic-dit"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg></div><div class="stat-label">Livres</div><div class="stat-value">{{ ds.livres }}</div></div>
-<div class="stat-card fade-up d2" @click="go('utilisateurs')"><div class="stat-icon ic-green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="stat-label">Membres</div><div class="stat-value">{{ ds.membres }}</div></div>
-<div class="stat-card fade-up d3" @click="go('emprunts')"><div class="stat-icon ic-amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg></div><div class="stat-label">Emprunts en cours</div><div class="stat-value">{{ ds.enCours }}</div></div>
-<div class="stat-card fade-up d4" @click="go('retards')"><div class="stat-icon ic-red"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="stat-label">Retards</div><div class="stat-value">{{ ds.retards }}</div></div>
-<div class="stat-card fade-up d5" @click="go('emprunts');empTab='attente'" style="position:relative"><div class="stat-icon" style="background:#fff3e0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="stat-label">En attente</div><div class="stat-value" :style="ds.enAttente>0?'color:#f59e0b':''">{{ ds.enAttente }}</div><span v-if="ds.enAttente>0" style="position:absolute;top:10px;right:10px;background:#ef4444;color:white;border-radius:99px;font-size:10px;font-weight:700;padding:2px 7px">!</span></div>
+<div class="hero fade-up"><div><h2>Bienvenue, {{ user.prenom }} !</h2><p>Gérez la bibliothèque : ajoutez des livres, validez les emprunts et suivez les retards.</p></div><div class="hero-date">{{ fDate }}</div></div>
+<div class="stats-row">
+<div class="stat-tile fade-up d1" @click="go('livres')"><div class="stat-icon ic-dit"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg></div><div class="stat-label">Livres</div><div class="stat-value">{{ ds.livres }}</div></div>
+<div class="stat-tile fade-up d2" @click="go('utilisateurs')"><div class="stat-icon ic-green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="stat-label">Membres</div><div class="stat-value">{{ ds.membres }}</div></div>
+<div class="stat-tile fade-up d3" @click="go('emprunts')"><div class="stat-icon ic-amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg></div><div class="stat-label">Emprunts en cours</div><div class="stat-value">{{ ds.enCours }}</div></div>
+<div class="stat-tile fade-up d4" @click="go('retards')"><div class="stat-icon ic-red"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="stat-label">Retards</div><div class="stat-value">{{ ds.retards }}</div></div>
+<div class="stat-tile fade-up d5" @click="go('emprunts');empTab='attente'" style="position:relative"><div class="stat-icon" style="background:#fff3e0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="stat-label">En attente</div><div class="stat-value" :style="ds.enAttente>0?'color:#f59e0b':''">{{ ds.enAttente }}</div><span v-if="ds.enAttente>0" style="position:absolute;top:10px;right:10px;background:#ef4444;color:white;border-radius:99px;font-size:10px;font-weight:700;padding:2px 7px">!</span></div>
 </div>
-<div class="toggle-row fade-up d3"><div><div class="tgl-label">Validation automatique des emprunts</div><div class="tgl-sub">{{ autoValid ? "Les emprunts sont validés sans intervention manuelle" : "Chaque emprunt doit être validé manuellement par l'admin" }}</div></div><div class="toggle" :class="{on:autoValid}" @click="toggleAutoValid()"></div></div>
-<h3 style="font-size:16px;font-weight:700;margin-bottom:14px" class="fade-up d4">Accès rapide</h3>
-<div class="service-grid">
-<div class="svc-card fade-up d4" @click="go('livres')"><h4>Catalogue des livres</h4><p>Ajouter et gérer les livres</p><div class="svc-count">{{ ds.livres }}<small>livres</small></div></div>
-<div class="svc-card fade-up d5" @click="go('utilisateurs')"><h4>Utilisateurs</h4><p>Gérer les membres inscrits</p><div class="svc-count">{{ ds.membres }}<small>membres</small></div></div>
-<div class="svc-card fade-up d5" @click="go('emprunts')"><h4>Emprunts</h4><p>Prêts et retours</p><div class="svc-count">{{ ds.enCours }}<small>en cours</small></div></div>
+<div class="split">
+<div class="card fade-up d4">
+<div class="card-header"><h3>Accès rapide</h3></div>
+<div class="access-grid">
+<div class="access-card" @click="go('livres')"><h4>Catalogue des livres</h4><p>Ajouter et gérer les livres</p><div class="count">{{ ds.livres }}<small>livres</small></div></div>
+<div class="access-card" @click="go('utilisateurs')"><h4>Utilisateurs</h4><p>Gérer les membres inscrits</p><div class="count">{{ ds.membres }}<small>membres</small></div></div>
+<div class="access-card" @click="go('emprunts')"><h4>Emprunts</h4><p>Prêts et retours</p><div class="count">{{ ds.enCours }}<small>en cours</small></div></div>
+</div>
+</div>
+<div>
+<div class="side-card fade-up d3">
+<h4>Validation automatique</h4>
+<p>{{ autoValid ? "Les emprunts sont validés sans intervention manuelle" : "Chaque emprunt doit être validé manuellement par l'admin" }}</p>
+<div class="toggle-row"><span style="font-size:12px;color:var(--muted);font-weight:600">Statut</span><div class="toggle" :class="{on:autoValid}" @click="toggleAutoValid()"></div></div>
+</div>
+<div class="side-card fade-up d4" v-if="ds.retards>0">
+<h4>Retards à traiter</h4>
+<p>{{ ds.retards }} emprunt(s) dépassent la date de retour prévue. Consultez l'onglet Retards pour régulariser.</p>
+</div>
+</div>
 </div>
 </section>
 
 <!-- DASHBOARD ÉTUDIANT/PROF -->
 <section v-if="pg==='dashboard'&&!isAdmin">
-<div class="hero fade-up"><h2>Bienvenue, {{ user.prenom }} !</h2><p>Consultez les livres disponibles et gérez vos emprunts.</p><div class="hero-date">{{ fDate }}</div></div>
+<div class="hero fade-up"><div><h2>Bienvenue, {{ user.prenom }} !</h2><p>Consultez les livres disponibles et gérez vos emprunts.</p></div><div class="hero-date">{{ fDate }}</div></div>
 <div class="stats-grid">
 <div class="stat-card fade-up d1" @click="go('livres')"><div class="stat-icon ic-dit"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg></div><div class="stat-label">Livres disponibles</div><div class="stat-value">{{ myS.dispo }}</div></div>
 <div class="stat-card fade-up d2" @click="go('emprunts')"><div class="stat-icon ic-amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg></div><div class="stat-label">Mes emprunts</div><div class="stat-value">{{ myS.enCours }}</div></div>
@@ -175,7 +185,8 @@
 <tbody><tr v-for="e in rets" :key="e.id"><td>{{ e.id }}</td><td><strong>{{ e._m }}</strong></td><td>{{ e._l }}</td><td>{{ e.date_retour_prevue }}</td><td><span class="badge badge-red"><span class="badge-dot"></span>+{{ lateDays(e) }} jours</span></td><td><button class="btn btn-success btn-sm" style="width:auto" @click="retourner(e.id)">Enregistrer le retour</button></td></tr></tbody></table></div>
 </section>
 
-</main></div></template>
+</main>
+</template>
 
 <!-- MODAL LIVRE -->
 <div class="overlay" v-if="modal==='livre'" @click.self="modal=null"><div class="modal"><h3>{{ mL.id?'Modifier':'Ajouter' }} un livre</h3>
@@ -224,7 +235,7 @@ function U(s){return location.protocol+'//'+location.hostname+':'+P[s]}
 
 createApp({setup(){
 const LOGO=ref('data:image/svg+xml;base64,'+btoa(LOGO_SVG));
-const user=ref(null),token=ref(null),pg=ref('dashboard'),sideOpen=ref(false),modal=ref(null),toasts=ref([]);let tid=0;
+const user=ref(null),token=ref(null),pg=ref('dashboard'),modal=ref(null),toasts=ref([]);let tid=0;
 
 async function api(s,p,m='GET',b=null){
   const o={method:m,headers:{'Content-Type':'application/json'}};
@@ -271,7 +282,7 @@ function toast(m,t='success'){const id=++tid;toasts.value.push({id,msg:m,type:t}
 function tLabel(t){return{etudiant:'Étudiant',professeur:'Professeur',personnel_administratif:'Admin.'}[t]||t}
 function isLate(e){return !e.date_retour_reelle&&new Date(e.date_retour_prevue)<new Date()}
 function lateDays(e){const p=new Date(e.date_retour_prevue),n=e.date_retour_reelle?new Date(e.date_retour_reelle):new Date();return Math.max(0,Math.floor((n-p)/864e5))}
-function go(p){pg.value=p;sideOpen.value=false;if(p==='dashboard')ldDash();else if(p==='livres')ldLiv();else if(p==='utilisateurs')ldUsr();else if(p==='emprunts')ldEmp();else if(p==='retards')ldRet()}
+function go(p){pg.value=p;if(p==='dashboard')ldDash();else if(p==='livres')ldLiv();else if(p==='utilisateurs')ldUsr();else if(p==='emprunts')ldEmp();else if(p==='retards')ldRet()}
 
 // Enrich emprunts with user/book names
 async function enrich(list){
@@ -407,7 +418,7 @@ async function retourner(id){if(!confirm('Confirmer le retour de ce livre ?'))re
 
 onMounted(()=>{const t=localStorage.getItem('bt'),u=localStorage.getItem('bu');if(t&&u){try{token.value=t;user.value=JSON.parse(u);ldDash()}catch(e){}}});
 
-return{LOGO,user,token,pg,sideOpen,modal,toasts,authMode,authErr,authLoad,showForgot,loginF,regF,livres,usrs,emps,empList,empListEnCours,empListAttente,empTabList,empTab,rets,retC,lLoad,uLoad,eLoad,lQ,autoValid,ds,mL,mU,mUE,mE,myEmps,myS,isAdmin,uInit,roleLabel,fDate,fLiv,livDispo,toast,tLabel,isLate,lateDays,go,doLogin,doRegister,logout,ldLiv,ldUsr,ldEmp,ldRet,ldDash,openLivreM,saveLivre,delLivre,openUserM,saveUser,delUser,openEditUser,saveEditUser,openEmpM,saveEmp,retourner,validerEmprunt,toggleAutoValid,mdpF,mdpErr,mdpLoad,doChangerMdp}
+return{LOGO,user,token,pg,modal,toasts,authMode,authErr,authLoad,showForgot,loginF,regF,livres,usrs,emps,empList,empListEnCours,empListAttente,empTabList,empTab,rets,retC,lLoad,uLoad,eLoad,lQ,autoValid,ds,mL,mU,mUE,mE,myEmps,myS,isAdmin,uInit,roleLabel,fDate,fLiv,livDispo,toast,tLabel,isLate,lateDays,go,doLogin,doRegister,logout,ldLiv,ldUsr,ldEmp,ldRet,ldDash,openLivreM,saveLivre,delLivre,openUserM,saveUser,delUser,openEditUser,saveEditUser,openEmpM,saveEmp,retourner,validerEmprunt,toggleAutoValid,mdpF,mdpErr,mdpLoad,doChangerMdp}
 }}).mount('#app');
 </script>
 </body>
