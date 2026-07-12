@@ -5,9 +5,16 @@ Plateforme de gestion de la bibliothèque numerique basée sur une architecture 
 Projet DevOps - Master 1 Intelligence Artificielle - Dakar Institute of Technology
 
 **Groupe 4 :**
-- KOUYATE Karifa
-- XXX. Daniel
-- ...........
+| Nom et prénoms | Genre | E-mail |
+|----------------|-------|--------|
+| KOUYATE Karifa | M | karifa.kouyate@mail.dit.sn |
+| MOKOYEL UOKARA Marie-Ange | F | marieange.makoyel@mail.dit.sn |
+| Daniel Lelano | M | daniel.lelano@mail.dit.sn |
+| Mokam Blandine | F | blandine.mokam@mail.dit.sn |
+| Dominique Fotsing | M | dominique.fotsing@mail.dit.sn |
+| Gadji Mahamat | M | gadji.mahamat@mail.dit.sn |
+| Pasteur Beati | M | pasteur.beati@mail.dit.sn |
+| Sylvestre Akowanou | M | sylvestre.akowanou@mail.dit.sn |
 
 ---
 

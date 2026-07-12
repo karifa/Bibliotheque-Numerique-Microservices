@@ -94,6 +94,7 @@ table{width:100%;border-collapse:collapse}thead tr{background:var(--light)}thead
 .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);margin-bottom:14px}.toggle-row .tgl-label{font-size:13px;font-weight:600;color:var(--navy)}.toggle-row .tgl-sub{font-size:11px;color:var(--muted)}
 .toggle{position:relative;width:44px;height:24px;background:var(--border);border-radius:12px;cursor:pointer;transition:background .3s;flex-shrink:0}.toggle.on{background:var(--success)}.toggle::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;background:white;border-radius:50%;transition:transform .3s;box-shadow:var(--shadow)}.toggle.on::after{transform:translateX(20px)}
 .action-bar{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+.pwd-wrap{position:relative}.pwd-wrap .form-input{padding-right:42px}.pwd-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:0;display:flex;align-items:center;line-height:1}.pwd-eye:hover{color:var(--dit)}
 
 @media(max-width:900px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.sidebar-overlay.open{display:block}.hamburger{display:block}.main-content{margin-left:0;max-width:100vw;padding:20px 16px 60px;padding-top:64px}.stats-grid{grid-template-columns:repeat(2,1fr)}.form-row{grid-template-columns:1fr}}
 @media(max-width:600px){.stats-grid{grid-template-columns:1fr}.service-grid{grid-template-columns:1fr}.page-header{flex-direction:column;align-items:flex-start}.search-bar{max-width:100%}}
@@ -123,7 +124,7 @@ table{width:100%;border-collapse:collapse}thead tr{background:var(--light)}thead
 
 <template v-if="authMode==='login'">
 <div class="form-group"><label class="form-label">Email</label><input class="form-input" v-model="loginF.email" type="email" placeholder="josias@dit.sn"></div>
-<div class="form-group"><label class="form-label">Mot de passe</label><input class="form-input" v-model="loginF.mdp" type="password" placeholder="••••••••" @keyup.enter="doLogin"></div>
+<div class="form-group"><label class="form-label">Mot de passe</label><div class="pwd-wrap"><input class="form-input" v-model="loginF.mdp" :type="showLoginPwd?'text':'password'" placeholder="••••••••" @keyup.enter="doLogin"><button type="button" class="pwd-eye" @click="showLoginPwd=!showLoginPwd" :title="showLoginPwd?'Masquer':'Afficher'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><template v-if="!showLoginPwd"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></template><template v-else><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></template></svg></button></div></div>
 <a href="#" @click.prevent="showForgot=!showForgot" style="display:block;text-align:right;font-size:12px;color:var(--dit-l);font-weight:500;margin-top:-6px;margin-bottom:14px;text-decoration:none">Mot de passe oublié ?</a>
 <div v-if="showForgot" class="alert" style="background:var(--dit-bg);color:var(--dit);font-size:12px;margin-bottom:14px">Pour réinitialiser votre mot de passe, veuillez contacter l'administrateur de la bibliothèque à <strong>admin@dit.sn</strong> avec votre email d'inscription.</div>
 <button class="btn btn-dit" @click="doLogin" :disabled="authLoad" style="margin-top:8px">{{ authLoad?'Connexion...':'Se connecter' }}</button>
@@ -134,8 +135,8 @@ table{width:100%;border-collapse:collapse}thead tr{background:var(--light)}thead
 <template v-if="authMode==='register'">
 <div class="form-row"><div class="form-group"><label class="form-label">Nom</label><input class="form-input" v-model="regF.nom" placeholder="AHOGA"></div><div class="form-group"><label class="form-label">Prénom</label><input class="form-input" v-model="regF.prenom" placeholder="Josias"></div></div>
 <div class="form-group"><label class="form-label">Email</label><input class="form-input" v-model="regF.email" type="email" placeholder="josias@dit.sn"></div>
-<div class="form-group"><label class="form-label">Mot de passe</label><input class="form-input" v-model="regF.mdp" type="password" placeholder="Minimum 6 caractères"></div>
-<div class="form-group"><label class="form-label">Confirmer le mot de passe</label><input class="form-input" v-model="regF.mdp2" type="password" placeholder="Retapez le mot de passe"></div>
+<div class="form-group"><label class="form-label">Mot de passe</label><div class="pwd-wrap"><input class="form-input" v-model="regF.mdp" :type="showRegPwd?'text':'password'" placeholder="Minimum 6 caractères"><button type="button" class="pwd-eye" @click="showRegPwd=!showRegPwd" :title="showRegPwd?'Masquer':'Afficher'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><template v-if="!showRegPwd"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></template><template v-else><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></template></svg></button></div></div>
+<div class="form-group"><label class="form-label">Confirmer le mot de passe</label><div class="pwd-wrap"><input class="form-input" v-model="regF.mdp2" :type="showRegPwd2?'text':'password'" placeholder="Retapez le mot de passe"><button type="button" class="pwd-eye" @click="showRegPwd2=!showRegPwd2" :title="showRegPwd2?'Masquer':'Afficher'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><template v-if="!showRegPwd2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></template><template v-else><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></template></svg></button></div></div>
 <div v-if="regF.mdp2&&regF.mdp!==regF.mdp2" class="alert alert-danger" style="padding:8px 12px;font-size:12px">Les mots de passe ne correspondent pas</div>
 <div class="form-row"><div class="form-group"><label class="form-label">Téléphone</label><input class="form-input" v-model="regF.telephone" placeholder="+221 77 123 45 67"></div>
 <div class="form-group"><label class="form-label">Vous êtes</label><select class="form-select" v-model="regF.type"><option value="etudiant">Étudiant(e)</option><option value="professeur">Enseignant(e)</option></select></div></div>
@@ -330,6 +331,7 @@ async function api(s,p,m='GET',b=null){
   return null;
 }
 const authMode=ref('login'),authErr=ref(''),authLoad=ref(false),showForgot=ref(false);
+const showLoginPwd=ref(false),showRegPwd=ref(false),showRegPwd2=ref(false);
 const mdpF=reactive({ancien:'',nouveau:'',confirm:''});const mdpErr=ref('');const mdpLoad=ref(false);
 const loginF=reactive({email:'',mdp:''});
 const regF=reactive({nom:'',prenom:'',email:'',mdp:'',mdp2:'',telephone:'',type:'etudiant',matricule:'',piece_type:'CNI',piece_num:''});
@@ -498,7 +500,7 @@ async function retourner(id){if(!confirm('Confirmer le retour de ce livre ?'))re
 
 onMounted(()=>{const t=localStorage.getItem('bt'),u=localStorage.getItem('bu');if(t&&u){try{token.value=t;user.value=JSON.parse(u);ldDash()}catch(e){}}});
 
-return{LOGO,user,token,pg,sideOpen,modal,toasts,authMode,authErr,authLoad,showForgot,loginF,regF,livres,usrs,emps,empList,empListEnCours,empListAttente,empTabList,empTab,rets,retC,lLoad,uLoad,eLoad,lQ,autoValid,ds,mL,mU,mUE,mE,myEmps,myS,isAdmin,uInit,roleLabel,fDate,fLiv,livDispo,toast,tLabel,isLate,lateDays,go,doLogin,doRegister,logout,ldLiv,ldUsr,ldEmp,ldRet,ldDash,openLivreM,saveLivre,delLivre,openUserM,saveUser,delUser,openEditUser,saveEditUser,openEmpM,saveEmp,retourner,validerEmprunt,toggleAutoValid,mdpF,mdpErr,mdpLoad,doChangerMdp}
+return{LOGO,user,token,pg,sideOpen,modal,toasts,authMode,authErr,authLoad,showForgot,showLoginPwd,showRegPwd,showRegPwd2,loginF,regF,livres,usrs,emps,empList,empListEnCours,empListAttente,empTabList,empTab,rets,retC,lLoad,uLoad,eLoad,lQ,autoValid,ds,mL,mU,mUE,mE,myEmps,myS,isAdmin,uInit,roleLabel,fDate,fLiv,livDispo,toast,tLabel,isLate,lateDays,go,doLogin,doRegister,logout,ldLiv,ldUsr,ldEmp,ldRet,ldDash,openLivreM,saveLivre,delLivre,openUserM,saveUser,delUser,openEditUser,saveEditUser,openEmpM,saveEmp,retourner,validerEmprunt,toggleAutoValid,mdpF,mdpErr,mdpLoad,doChangerMdp}
 }}).mount('#app');
 </script>
 </body>
