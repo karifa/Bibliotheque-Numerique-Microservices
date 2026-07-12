@@ -20,10 +20,10 @@ class Utilisateur(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     nom = Column(String(100), nullable=False)
-    prenom = Column(String(100), nullable=False)
+    prenom = Column(String(1000), nullable=False)
     email = Column(String(200), unique=True, nullable=False)
     mot_de_passe = Column(String(255), nullable=False)
-    telephone = Column(String(20), nullable=True)
+    telephone = Column(String(200), nullable=True)
     type = Column(Enum(TypeUtilisateur), nullable=False)
     role = Column(Enum(RoleUtilisateur), default=RoleUtilisateur.membre, nullable=False)
     matricule = Column(String(50), unique=True, nullable=True)
