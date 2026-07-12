@@ -4,16 +4,18 @@ Plateforme de gestion de la bibliothèque numerique basée sur une architecture 
 
 Projet DevOps - Master 1 Intelligence Artificielle - Dakar Institute of Technology
 
-**Groupe 5 :**
+**Groupe 4 & 5 : DevOp Projet**
 GAMARADINE MAHAMAT SAMBO (Mr)
 KOUYATE Karifa (Mr)
 LELANO Daniel (Mr)
 GADJI Mahamat (Mr)
-AKOWANOU Sylvestre (Mr)
+AKOWANOU Noudehouenou Sylvestre (Mr)
 MOKAM Blandine (Mme)
 FOTSING SOUOP Dominique (Mr)
 BEATI Pasteur Emmanuel (Mr)
 MAKOYEL YOKARA Marie-Ange (Mme)
+
+- ...........
 
 ---
 
@@ -37,6 +39,7 @@ MAKOYEL YOKARA Marie-Ange (Mme)
 ## Lancement avec Docker Compose
 
 ### Prérequis
+
 - Docker Desktop installé et démarré
 - Git installé
 
@@ -106,11 +109,13 @@ http://localhost:8002/docs
 Vous êtes maintenant connecté en tant qu'administrateur avec accès complet à toutes les fonctionnalités.
 
 > **Alternative en ligne de commande (Windows PowerShell) :**
+>
 > ```powershell
 > Invoke-RestMethod -Method POST -Uri "http://localhost:8002/utilisateurs" -ContentType "application/json" -Body '{"nom":"Admin","prenom":"DIT","email":"admin@dit.sn","mot_de_passe":"admin123","type":"personnel_administratif","role":"admin"}'
 > ```
 
 > **Alternative en ligne de commande (Linux / Mac) :**
+>
 > ```bash
 > curl -X POST http://localhost:8002/utilisateurs -H "Content-Type: application/json" -d '{"nom":"Admin","prenom":"DIT","email":"admin@dit.sn","mot_de_passe":"admin123","type":"personnel_administratif","role":"admin"}'
 > ```
@@ -120,6 +125,7 @@ Vous êtes maintenant connecté en tant qu'administrateur avec accès complet à
 ## Fonctionnalités
 
 ### Authentification et rôles
+
 - Connexion par **email + mot de passe**
 - Inscription avec **confirmation du mot de passe**
 - **Trois types d'utilisateurs** : Étudiant, Enseignant, Personnel administratif
@@ -130,16 +136,19 @@ Vous êtes maintenant connecté en tant qu'administrateur avec accès complet à
 - Lien **"Mot de passe oublié"** renvoyant vers le contact admin (admin@dit.sn)
 
 ### Dashboard adapté au rôle
+
 - **Administrateur** : statistiques globales cliquables (livres, membres, emprunts en cours, retards), toggle de validation automatique/manuelle des emprunts, accès rapide à toutes les sections
 - **Étudiant / Enseignant** : ses propres emprunts en cours avec statut, livres disponibles, invitation à contacter admin@dit.sn pour partager des documents
 
 ### Gestion des livres (admin)
+
 - Catalogue complet avec recherche par titre, auteur ou ISBN
 - Ajout avec **quantité d'exemplaires** (un même livre peut avoir plusieurs exemplaires)
 - Modification et suppression
 - Affichage du nombre d'exemplaires disponibles sur le total (ex: 2/3)
 
 ### Gestion des utilisateurs (admin)
+
 - Liste de tous les membres inscrits
 - **Modifier** les informations d'un utilisateur
 - **Désactiver** un compte membre : bloqué si des emprunts sont en cours, sinon désactivation douce avec conservation de l'historique
@@ -147,6 +156,7 @@ Vous êtes maintenant connecté en tant qu'administrateur avec accès complet à
 - Créer un accès avec mot de passe temporaire
 
 ### Gestion des emprunts
+
 - Emprunt par sélection dans une liste déroulante (membre + livre disponible)
 - **Durée fixe de 15 jours** pour chaque emprunt
 - **Maximum 2 emprunts en cours** par utilisateur
@@ -154,6 +164,7 @@ Vous êtes maintenant connecté en tant qu'administrateur avec accès complet à
 - Mise à jour automatique de la disponibilité des exemplaires après emprunt/retour
 
 ### Page d'accueil
+
 - Logo DIT et titre à gauche, formulaire de connexion/inscription à droite
 - Design sur fond vert DIT avec carte blanche pour le formulaire
 
@@ -163,17 +174,18 @@ Vous êtes maintenant connecté en tant qu'administrateur avec accès complet à
 
 FastAPI génère automatiquement une documentation interactive (Swagger UI).
 
-| Service | URL de la documentation |
-|---|---|
-| Livres | http://localhost:8001/docs |
+| Service      | URL de la documentation    |
+| ------------ | -------------------------- |
+| Livres       | http://localhost:8001/docs |
 | Utilisateurs | http://localhost:8002/docs |
-| Emprunts | http://localhost:8003/docs |
+| Emprunts     | http://localhost:8003/docs |
 
 ---
 
 ## Pipeline Jenkins
 
 ### Prérequis Jenkins
+
 - Jenkins installé avec les plugins : Git, Docker Pipeline
 - Le Jenkinsfile est **compatible Windows et Linux** (utilise `isUnix()` pour détecter l'OS)
 
@@ -186,51 +198,54 @@ FastAPI génère automatiquement une documentation interactive (Swagger UI).
 
 ### Étapes du pipeline
 
-| Étape | Description |
-|---|---|
-| Récupération du code | Clone le dépôt GitHub |
-| Vérification de la structure | Contrôle la présence des 12 fichiers essentiels |
-| Build Docker | Construit les 4 images Docker |
-| Arrêt ancienne version | Supprime les anciens conteneurs |
-| Déploiement | Lance les nouveaux conteneurs |
-| Vérification santé | Teste les endpoints `/health` des 3 services + frontend |
-| Tests fonctionnels | Valide les APIs avec des requêtes POST et GET |
+| Étape                        | Description                                             |
+| ---------------------------- | ------------------------------------------------------- |
+| Récupération du code         | Clone le dépôt GitHub                                   |
+| Vérification de la structure | Contrôle la présence des 12 fichiers essentiels         |
+| Build Docker                 | Construit les 4 images Docker                           |
+| Arrêt ancienne version       | Supprime les anciens conteneurs                         |
+| Déploiement                  | Lance les nouveaux conteneurs                           |
+| Vérification santé           | Teste les endpoints `/health` des 3 services + frontend |
+| Tests fonctionnels           | Valide les APIs avec des requêtes POST et GET           |
 
 ---
 
 ## Microservices - Endpoints
 
 ### Service Livres (port 8001)
-| Méthode | Endpoint | Action |
-|---|---|---|
-| GET | `/livres` | Lister tous les livres |
-| GET | `/livres/recherche?titre=...` | Rechercher par titre, auteur ou ISBN |
-| GET | `/livres/{id}` | Détails d'un livre |
-| POST | `/livres` | Ajouter un livre (avec quantité) |
-| PUT | `/livres/{id}` | Modifier un livre |
-| DELETE | `/livres/{id}` | Supprimer un livre |
+
+| Méthode | Endpoint                      | Action                               |
+| ------- | ----------------------------- | ------------------------------------ |
+| GET     | `/livres`                     | Lister tous les livres               |
+| GET     | `/livres/recherche?titre=...` | Rechercher par titre, auteur ou ISBN |
+| GET     | `/livres/{id}`                | Détails d'un livre                   |
+| POST    | `/livres`                     | Ajouter un livre (avec quantité)     |
+| PUT     | `/livres/{id}`                | Modifier un livre                    |
+| DELETE  | `/livres/{id}`                | Supprimer un livre                   |
 
 ### Service Utilisateurs (port 8002)
-| Méthode | Endpoint | Action |
-|---|---|---|
-| POST | `/auth/register` | Inscription (avec confirmation mot de passe) |
-| POST | `/auth/login` | Connexion (email + mot de passe) |
-| GET | `/auth/me` | Profil de l'utilisateur connecté |
-| POST | `/auth/changer-mot-de-passe` | Changer son mot de passe (obligatoire si temporaire) |
-| GET | `/utilisateurs` | Lister tous les membres |
-| GET | `/utilisateurs/type/{type}` | Filtrer par type (etudiant, professeur...) |
-| GET | `/utilisateurs/{id}` | Détails d'un membre |
-| POST | `/utilisateurs` | Créer un membre (admin, avec mot de passe temporaire) |
-| PUT | `/utilisateurs/{id}` | Modifier un membre |
-| PUT | `/utilisateurs/{id}/desactiver` | Désactiver un membre (conservation de l'historique) |
-| DELETE | `/utilisateurs/{id}` | Supprimer définitivement un membre |
+
+| Méthode | Endpoint                        | Action                                                |
+| ------- | ------------------------------- | ----------------------------------------------------- |
+| POST    | `/auth/register`                | Inscription (avec confirmation mot de passe)          |
+| POST    | `/auth/login`                   | Connexion (email + mot de passe)                      |
+| GET     | `/auth/me`                      | Profil de l'utilisateur connecté                      |
+| POST    | `/auth/changer-mot-de-passe`    | Changer son mot de passe (obligatoire si temporaire)  |
+| GET     | `/utilisateurs`                 | Lister tous les membres                               |
+| GET     | `/utilisateurs/type/{type}`     | Filtrer par type (etudiant, professeur...)            |
+| GET     | `/utilisateurs/{id}`            | Détails d'un membre                                   |
+| POST    | `/utilisateurs`                 | Créer un membre (admin, avec mot de passe temporaire) |
+| PUT     | `/utilisateurs/{id}`            | Modifier un membre                                    |
+| PUT     | `/utilisateurs/{id}/desactiver` | Désactiver un membre (conservation de l'historique)   |
+| DELETE  | `/utilisateurs/{id}`            | Supprimer définitivement un membre                    |
 
 ### Service Emprunts (port 8003)
-| Méthode | Endpoint | Action |
-|---|---|---|
-| POST | `/emprunts` | Emprunter un livre (max 2 en cours, durée 15 jours) |
-| PUT | `/emprunts/{id}/retour` | Enregistrer le retour d'un livre |
-| GET | `/emprunts` | Historique complet des emprunts |
-| GET | `/emprunts/en-cours` | Emprunts non retournés |
-| GET | `/emprunts/retards` | Emprunts en retard |
-| GET | `/emprunts/utilisateur/{id}` | Historique d'un membre |
+
+| Méthode | Endpoint                     | Action                                              |
+| ------- | ---------------------------- | --------------------------------------------------- |
+| POST    | `/emprunts`                  | Emprunter un livre (max 2 en cours, durée 15 jours) |
+| PUT     | `/emprunts/{id}/retour`      | Enregistrer le retour d'un livre                    |
+| GET     | `/emprunts`                  | Historique complet des emprunts                     |
+| GET     | `/emprunts/en-cours`         | Emprunts non retournés                              |
+| GET     | `/emprunts/retards`          | Emprunts en retard                                  |
+| GET     | `/emprunts/utilisateur/{id}` | Historique d'un membre                              |

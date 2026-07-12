@@ -1,425 +1,2140 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Bibliothèque Numérique — DIT</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link href="style.css" rel="stylesheet">
-<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-</head>
-<body>
-<div id="app">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Bibliothèque Numérique — DIT</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link href="style.css" rel="stylesheet" />
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <!-- ═══ AUTH ═══ -->
+      <div v-if="!user" class="auth-page">
+        <div class="auth-container">
+          <div class="auth-brand">
+            <img :src="LOGO" alt="DIT" />
+            <h1>
+              Bienvenue à la <span>Bibliothèque Numérique</span> du DIT - Dakar
+              Institute of Technology
+            </h1>
+            <p
+              style="
+                font-size: 13px;
+                color: rgba(255, 255, 255, 0.6);
+                line-height: 1.7;
+              "
+            >
+              Votre plateforme de gestion de bibliothèque numérique
+            </p>
+          </div>
+          <div class="auth-card">
+            <h2 v-if="authMode==='login'">Connexion</h2>
+            <h2 v-else>Inscription</h2>
+            <p class="auth-sub" v-if="authMode==='login'">
+              Connectez-vous avec votre email et mot de passe
+            </p>
+            <p class="auth-sub" v-else>Créez votre compte</p>
+            <div class="auth-tabs">
+              <button
+                class="auth-tab"
+                :class="{active:authMode==='login'}"
+                @click="authMode='login';authErr=''"
+              >
+                Connexion
+              </button>
+              <button
+                class="auth-tab"
+                :class="{active:authMode==='register'}"
+                @click="authMode='register';authErr=''"
+              >
+                Inscription
+              </button>
+            </div>
+            <div v-if="authErr" class="alert alert-danger">{{ authErr }}</div>
 
-<!-- ═══ AUTH ═══ -->
-<div v-if="!user" class="auth-page">
-<div class="auth-container">
-<div class="auth-brand">
-<img :src="LOGO" alt="DIT"/>
-<h1>Bienvenue à la <span>Bibliothèque Numérique</span> du DIT - Dakar Institute of Technology </h1>
-<p style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.7">Votre plateforme de gestion de bibliothèque numérique</p>
-</div>
-<div class="auth-card">
-<h2 v-if="authMode==='login'">Connexion</h2>
-<h2 v-else>Inscription</h2>
-<p class="auth-sub" v-if="authMode==='login'">Connectez-vous avec votre email et mot de passe</p>
-<p class="auth-sub" v-else>Créez votre compte</p>
-<div class="auth-tabs">
-<button class="auth-tab" :class="{active:authMode==='login'}" @click="authMode='login';authErr=''">Connexion</button>
-<button class="auth-tab" :class="{active:authMode==='register'}" @click="authMode='register';authErr=''">Inscription</button>
-</div>
-<div v-if="authErr" class="alert alert-danger">{{ authErr }}</div>
+            <template v-if="authMode==='login'">
+              <div class="form-group">
+                <label class="form-label">Email</label
+                ><input
+                  class="form-input"
+                  v-model="loginF.email"
+                  type="email"
+                  placeholder="josias@dit.sn"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Mot de passe</label
+                ><input
+                  class="form-input"
+                  v-model="loginF.mdp"
+                  type="password"
+                  placeholder="••••••••"
+                  @keyup.enter="doLogin"
+                />
+              </div>
+              <a
+                href="#"
+                @click.prevent="showForgot=!showForgot"
+                style="
+                  display: block;
+                  text-align: right;
+                  font-size: 12px;
+                  color: var(--dit-l);
+                  font-weight: 500;
+                  margin-top: -6px;
+                  margin-bottom: 14px;
+                  text-decoration: none;
+                "
+                >Mot de passe oublié ?</a
+              >
+              <div
+                v-if="showForgot"
+                class="alert"
+                style="
+                  background: var(--dit-bg);
+                  color: var(--dit);
+                  font-size: 12px;
+                  margin-bottom: 14px;
+                "
+              >
+                Mot de passe oublié ? Écrivez à l'administrateur de la
+                bibliothèque à <strong>admin@dit.sn</strong> avec votre email
+                d'inscription.
+              </div>
+              <button
+                class="btn btn-dit"
+                @click="doLogin"
+                :disabled="authLoad"
+                style="margin-top: 8px"
+              >
+                {{ authLoad?'Connexion...':'Se connecter' }}
+              </button>
+              <div class="divider">ou</div>
+              <p
+                style="text-align: center; font-size: 12px; color: var(--muted)"
+              >
+                Vous n'avez pas de compte ?
+                <a
+                  href="#"
+                  @click.prevent="authMode='register';authErr=''"
+                  style="
+                    color: var(--dit);
+                    font-weight: 600;
+                    text-decoration: none;
+                  "
+                  >Inscrivez-vous</a
+                >
+              </p>
+            </template>
 
-<template v-if="authMode==='login'">
-<div class="form-group"><label class="form-label">Email</label><input class="form-input" v-model="loginF.email" type="email" placeholder="josias@dit.sn"></div>
-<div class="form-group"><label class="form-label">Mot de passe</label><input class="form-input" v-model="loginF.mdp" type="password" placeholder="••••••••" @keyup.enter="doLogin"></div>
-<a href="#" @click.prevent="showForgot=!showForgot" style="display:block;text-align:right;font-size:12px;color:var(--dit-l);font-weight:500;margin-top:-6px;margin-bottom:14px;text-decoration:none">Mot de passe oublié ?</a>
-<div v-if="showForgot" class="alert" style="background:var(--dit-bg);color:var(--dit);font-size:12px;margin-bottom:14px">Mot de passe oublié ? Écrivez à l'administrateur de la bibliothèque à <strong>admin@dit.sn</strong> avec votre email d'inscription.</div>
-<button class="btn btn-dit" @click="doLogin" :disabled="authLoad" style="margin-top:8px">{{ authLoad?'Connexion...':'Se connecter' }}</button>
-<div class="divider">ou</div>
-<p style="text-align:center;font-size:12px;color:var(--muted)">Vous n'avez pas de compte ? <a href="#" @click.prevent="authMode='register';authErr=''" style="color:var(--dit);font-weight:600;text-decoration:none">Inscrivez-vous</a></p>
-</template>
+            <template v-if="authMode==='register'">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Nom</label
+                  ><input
+                    class="form-input"
+                    v-model="regF.nom"
+                    placeholder="AHOGA"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Prénom(s)</label
+                  ><input
+                    class="form-input"
+                    v-model="regF.prenom"
+                    placeholder="Josias"
+                  />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email</label
+                ><input
+                  class="form-input"
+                  v-model="regF.email"
+                  type="email"
+                  placeholder="josias@dit.sn"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Mot de passe</label
+                ><input
+                  class="form-input"
+                  v-model="regF.mdp"
+                  type="password"
+                  placeholder="Minimum 6 caractères"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Confirmer le mot de passe</label
+                ><input
+                  class="form-input"
+                  v-model="regF.mdp2"
+                  type="password"
+                  placeholder="Retapez le mot de passe"
+                />
+              </div>
+              <div
+                v-if="regF.mdp2&&regF.mdp!==regF.mdp2"
+                class="alert alert-danger"
+                style="padding: 8px 12px; font-size: 12px"
+              >
+                Les mots de passe ne correspondent pas
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Téléphone *</label
+                  ><input
+                    class="form-input"
+                    v-model="regF.telephone"
+                    placeholder="+221 77 123 45 67"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Vous êtes</label
+                  ><select class="form-select" v-model="regF.type">
+                    <option value="etudiant">Étudiant(e)</option>
+                    <option value="professeur">Enseignant(e)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group" v-if="regF.type==='etudiant'">
+                <label class="form-label">Matricule étudiant *</label
+                ><input
+                  class="form-input"
+                  v-model="regF.matricule"
+                  placeholder="Ex: AA1231122"
+                />
+              </div>
+              <template v-if="regF.type!=='etudiant'">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Type de pièce *</label
+                    ><select class="form-select" v-model="regF.piece_type">
+                      <option value="CNI">
+                        Carte Nationale Identité (CNI)
+                      </option>
+                      <option value="Passeport">Passeport</option>
+                      <option value="Autre">Autre</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">N° pièce *</label
+                    ><input
+                      class="form-input"
+                      v-model="regF.piece_num"
+                      placeholder="Ex: SN-123456789"
+                    />
+                  </div>
+                </div>
+              </template>
+              <button
+                class="btn btn-dit"
+                @click="doRegister"
+                :disabled="authLoad"
+                style="margin-top: 8px"
+              >
+                {{ authLoad?'Inscription...':'Créer mon compte' }}
+              </button>
+              <div class="divider">ou</div>
+              <p
+                style="text-align: center; font-size: 12px; color: var(--muted)"
+              >
+                Déjà inscrit ?
+                <a
+                  href="#"
+                  @click.prevent="authMode='login';authErr=''"
+                  style="
+                    color: var(--dit);
+                    font-weight: 600;
+                    text-decoration: none;
+                  "
+                  >Se connecter</a
+                >
+              </p>
+            </template>
+          </div>
+        </div>
+      </div>
 
-<template v-if="authMode==='register'">
-<div class="form-row"><div class="form-group"><label class="form-label">Nom</label><input class="form-input" v-model="regF.nom" placeholder="AHOGA"></div><div class="form-group"><label class="form-label">Prénom(s)</label><input class="form-input" v-model="regF.prenom" placeholder="Josias"></div></div>
-<div class="form-group"><label class="form-label">Email</label><input class="form-input" v-model="regF.email" type="email" placeholder="josias@dit.sn"></div>
-<div class="form-group"><label class="form-label">Mot de passe</label><input class="form-input" v-model="regF.mdp" type="password" placeholder="Minimum 6 caractères"></div>
-<div class="form-group"><label class="form-label">Confirmer le mot de passe</label><input class="form-input" v-model="regF.mdp2" type="password" placeholder="Retapez le mot de passe"></div>
-<div v-if="regF.mdp2&&regF.mdp!==regF.mdp2" class="alert alert-danger" style="padding:8px 12px;font-size:12px">Les mots de passe ne correspondent pas</div>
-<div class="form-row"><div class="form-group"><label class="form-label">Téléphone *</label><input class="form-input" v-model="regF.telephone" placeholder="+221 77 123 45 67"></div>
-<div class="form-group"><label class="form-label">Vous êtes</label><select class="form-select" v-model="regF.type"><option value="etudiant">Étudiant(e)</option><option value="professeur">Enseignant(e)</option></select></div></div>
-<div class="form-group" v-if="regF.type==='etudiant'"><label class="form-label">Matricule étudiant *</label><input class="form-input" v-model="regF.matricule" placeholder="Ex: AA1231122"></div>
-<template v-if="regF.type!=='etudiant'">
-<div class="form-row"><div class="form-group"><label class="form-label">Type de pièce *</label><select class="form-select" v-model="regF.piece_type"><option value="CNI">Carte Nationale Identité (CNI)</option><option value="Passeport">Passeport</option><option value="Autre">Autre</option></select></div>
-<div class="form-group"><label class="form-label">N° pièce *</label><input class="form-input" v-model="regF.piece_num" placeholder="Ex: SN-123456789"></div></div>
-</template>
-<button class="btn btn-dit" @click="doRegister" :disabled="authLoad" style="margin-top:8px">{{ authLoad?'Inscription...':'Créer mon compte' }}</button>
-<div class="divider">ou</div>
-<p style="text-align:center;font-size:12px;color:var(--muted)">Déjà inscrit ? <a href="#" @click.prevent="authMode='login';authErr=''" style="color:var(--dit);font-weight:600;text-decoration:none">Se connecter</a></p>
-</template>
-</div></div></div>
+      <!-- ═══ APP ═══ -->
+      <template v-if="user">
+        <header class="topbar">
+          <div class="tb-brand">
+            <img :src="LOGO" alt="DIT" />
+            <div class="tb-brand-text">
+              <strong>Bibliothèque Numérique</strong><span>Plateforme DIT</span>
+            </div>
+          </div>
+          <nav class="tb-nav">
+            <a :class="{active:pg==='dashboard'}" @click="go('dashboard')"
+              ><svg
+                class="nav-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="3" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="3" width="7" height="7" rx="1" />
+                <rect x="3" y="14" width="7" height="7" rx="1" />
+                <rect x="14" y="14" width="7" height="7" rx="1" /></svg
+              >Accueil</a
+            >
+            <a :class="{active:pg==='livres'}" @click="go('livres')"
+              ><svg
+                class="nav-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
+                <path
+                  d="M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"
+                /></svg
+              >Livres</a
+            >
+            <a
+              v-if="isAdmin"
+              :class="{active:pg==='utilisateurs'}"
+              @click="go('utilisateurs')"
+              ><svg
+                class="nav-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                <circle cx="9" cy="7" r="4" /></svg
+              >Utilisateurs</a
+            >
+            <a :class="{active:pg==='emprunts'}" @click="go('emprunts')"
+              ><svg
+                class="nav-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M12 8v4l3 3" />
+                <circle cx="12" cy="12" r="10" /></svg
+              >Emprunts</a
+            >
+            <a
+              v-if="isAdmin"
+              :class="{active:pg==='retards'}"
+              @click="go('retards')"
+              ><svg
+                class="nav-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+                />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" /></svg
+              >Retards<span class="nav-badge" v-if="retC>0">{{ retC }}</span></a
+            >
+          </nav>
+          <div class="tb-user">
+            <div class="tb-avatar">{{ uInit }}</div>
+            <div class="tb-user-text">
+              <strong>{{ user.prenom }} {{ user.nom }}</strong
+              ><span>{{ roleLabel }}</span>
+            </div>
+            <button class="tb-logout" @click="logout" title="Se déconnecter">
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+            </button>
+          </div>
+        </header>
+        <main class="main-content">
+          <!-- DASHBOARD ADMIN -->
+          <section v-if="pg==='dashboard'&&isAdmin">
+            <div class="hero fade-up">
+              <div>
+                <h2>Bienvenue, {{ user.prenom }} !</h2>
+                <p>
+                  Tout pour gérer votre bibliothèque : catalogue, emprunts et
+                  retards, au même endroit.
+                </p>
+              </div>
+              <div class="hero-date">{{ fDate }}</div>
+            </div>
+            <div class="stats-row">
+              <div class="stat-tile fade-up d1" @click="go('livres')">
+                <div class="stat-icon ic-dit">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
+                    <path
+                      d="M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"
+                    />
+                  </svg>
+                </div>
+                <div class="stat-label">Livres</div>
+                <div class="stat-value">{{ ds.livres }}</div>
+              </div>
+              <div class="stat-tile fade-up d2" @click="go('utilisateurs')">
+                <div class="stat-icon ic-green">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                  </svg>
+                </div>
+                <div class="stat-label">Membres</div>
+                <div class="stat-value">{{ ds.membres }}</div>
+              </div>
+              <div class="stat-tile fade-up d3" @click="go('emprunts')">
+                <div class="stat-icon ic-amber">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M12 8v4l3 3" />
+                    <circle cx="12" cy="12" r="10" />
+                  </svg>
+                </div>
+                <div class="stat-label">Emprunts en cours</div>
+                <div class="stat-value">{{ ds.enCours }}</div>
+              </div>
+              <div class="stat-tile fade-up d4" @click="go('retards')">
+                <div class="stat-icon ic-red">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+                    />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                  </svg>
+                </div>
+                <div class="stat-label">Emprunts en Retards</div>
+                <div class="stat-value">{{ ds.retards }}</div>
+              </div>
+              <div
+                class="stat-tile fade-up d5"
+                @click="go('emprunts');empTab='attente'"
+                style="position: relative"
+              >
+                <div class="stat-icon" style="background: #fff3e0">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#f59e0b"
+                    stroke-width="2"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                </div>
+                <div class="stat-label">En attente</div>
+                <div
+                  class="stat-value"
+                  :style="ds.enAttente>0?'color:#f59e0b':''"
+                >
+                  {{ ds.enAttente }}
+                </div>
+                <span
+                  v-if="ds.enAttente>0"
+                  style="
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                    background: #ef4444;
+                    color: white;
+                    border-radius: 99px;
+                    font-size: 10px;
+                    font-weight: 700;
+                    padding: 2px 7px;
+                  "
+                  >!</span
+                >
+              </div>
+            </div>
+            <div class="split">
+              <div class="card fade-up d4">
+                <div class="card-header"><h3>Accès rapide</h3></div>
+                <div class="access-grid">
+                  <div class="access-card" @click="go('livres')">
+                    <h4>Catalogue des livres</h4>
+                    <p>Ajouter et gérer les livres</p>
+                    <div class="count">
+                      {{ ds.livres }}<small>livres</small>
+                    </div>
+                  </div>
+                  <div class="access-card" @click="go('utilisateurs')">
+                    <h4>Utilisateurs</h4>
+                    <p>Gérer les membres inscrits</p>
+                    <div class="count">
+                      {{ ds.membres }}<small>membres</small>
+                    </div>
+                  </div>
+                  <div class="access-card" @click="go('emprunts')">
+                    <h4>Emprunts</h4>
+                    <p>Prêts et retours</p>
+                    <div class="count">
+                      {{ ds.enCours }}<small>en cours</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="side-card fade-up d3">
+                  <h4>Validation automatique</h4>
+                  <p>
+                    {{ autoValid ? "Chaque emprunt est traité automatiquement,
+                    sans action de votre part." : "Chaque emprunt doit être
+                    validé manuellement par l'admin" }}
+                  </p>
+                  <div class="toggle-row">
+                    <span
+                      style="
+                        font-size: 12px;
+                        color: var(--muted);
+                        font-weight: 600;
+                      "
+                      >Statut</span
+                    >
+                    <div
+                      class="toggle"
+                      :class="{on:autoValid}"
+                      @click="toggleAutoValid()"
+                    ></div>
+                  </div>
+                </div>
+                <div class="side-card fade-up d4" v-if="ds.retards>0">
+                  <h4>Retards à traiter</h4>
+                  <p>
+                    {{ ds.retards }} emprunt(s) dépassent la date de retour
+                    prévue. Consultez l'onglet Retards pour régulariser.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
 
-<!-- ═══ APP ═══ -->
-<template v-if="user">
-<header class="topbar">
-<div class="tb-brand"><img :src="LOGO" alt="DIT"/><div class="tb-brand-text"><strong>Bibliothèque Numérique</strong><span>Plateforme DIT</span></div></div>
-<nav class="tb-nav">
-<a :class="{active:pg==='dashboard'}" @click="go('dashboard')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Accueil</a>
-<a :class="{active:pg==='livres'}" @click="go('livres')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg>Livres</a>
-<a v-if="isAdmin" :class="{active:pg==='utilisateurs'}" @click="go('utilisateurs')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Utilisateurs</a>
-<a :class="{active:pg==='emprunts'}" @click="go('emprunts')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>Emprunts</a>
-<a v-if="isAdmin" :class="{active:pg==='retards'}" @click="go('retards')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Retards<span class="nav-badge" v-if="retC>0">{{ retC }}</span></a>
-</nav>
-<div class="tb-user">
-<div class="tb-avatar">{{ uInit }}</div>
-<div class="tb-user-text"><strong>{{ user.prenom }} {{ user.nom }}</strong><span>{{ roleLabel }}</span></div>
-<button class="tb-logout" @click="logout" title="Se déconnecter"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
-</div>
-</header>
-<main class="main-content">
+          <!-- DASHBOARD ÉTUDIANT & PROF -->
+          <section v-if="pg==='dashboard'&&!isAdmin">
+            <div class="hero fade-up">
+              <div>
+                <h2>Bienvenue, {{ user.prenom }} !</h2>
+                <p>Consultez les livres disponibles et gérez vos emprunts.</p>
+              </div>
+              <div class="hero-date">{{ fDate }}</div>
+            </div>
+            <div class="stats-grid">
+              <div class="stat-card fade-up d1" @click="go('livres')">
+                <div class="stat-icon ic-dit">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
+                    <path
+                      d="M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"
+                    />
+                  </svg>
+                </div>
+                <div class="stat-label">Livres disponibles</div>
+                <div class="stat-value">{{ myS.dispo }}</div>
+              </div>
+              <div class="stat-card fade-up d2" @click="go('emprunts')">
+                <div class="stat-icon ic-amber">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M12 8v4l3 3" />
+                    <circle cx="12" cy="12" r="10" />
+                  </svg>
+                </div>
+                <div class="stat-label">Mes emprunts</div>
+                <div class="stat-value">{{ myS.enCours }}</div>
+              </div>
+              <div class="stat-card fade-up d3">
+                <div class="stat-icon ic-red">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+                    />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                  </svg>
+                </div>
+                <div class="stat-label">Mes retards</div>
+                <div class="stat-value">{{ myS.retards }}</div>
+              </div>
+            </div>
+            <div class="card fade-up d3" style="margin-bottom: 24px">
+              <div class="card-header"><h3>Mes emprunts en cours</h3></div>
+              <div v-if="myEmps.length===0" class="empty">
+                <p>Aucun emprunt en cours</p>
+              </div>
+              <table v-else>
+                <thead>
+                  <tr>
+                    <th>Livre</th>
+                    <th>Emprunté le</th>
+                    <th>Retour prévu</th>
+                    <th>Statut</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="e in myEmps" :key="e.id">
+                    <td><strong>{{ e._l }}</strong></td>
+                    <td>{{ e.date_emprunt }}</td>
+                    <td>{{ e.date_retour_prevue }}</td>
+                    <td>
+                      <span v-if="isLate(e)" class="badge badge-red"
+                        ><span class="badge-dot"></span>En retard (+{{
+                        lateDays(e) }}j)</span
+                      ><span v-else class="badge badge-green"
+                        ><span class="badge-dot"></span>En cours</span
+                      >
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="info-box fade-up d4">
+              <h4>Vous avez des documents à partager ?</h4>
+              <p>
+                Si vous disposez de cours, mémoires ou ouvrages à mettre à
+                disposition de la communauté DIT, contactez l'administrateur à
+                <a href="mailto:admin@dit.sn">admin@dit.sn</a>
+              </p>
+            </div>
+          </section>
 
-<!-- DASHBOARD ADMIN -->
-<section v-if="pg==='dashboard'&&isAdmin">
-<div class="hero fade-up"><div><h2>Bienvenue, {{ user.prenom }} !</h2><p>Tout pour gérer votre bibliothèque : catalogue, emprunts et retards, au même endroit.</p></div><div class="hero-date">{{ fDate }}</div></div>
-<div class="stats-row">
-<div class="stat-tile fade-up d1" @click="go('livres')"><div class="stat-icon ic-dit"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg></div><div class="stat-label">Livres</div><div class="stat-value">{{ ds.livres }}</div></div>
-<div class="stat-tile fade-up d2" @click="go('utilisateurs')"><div class="stat-icon ic-green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="stat-label">Membres</div><div class="stat-value">{{ ds.membres }}</div></div>
-<div class="stat-tile fade-up d3" @click="go('emprunts')"><div class="stat-icon ic-amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg></div><div class="stat-label">Emprunts en cours</div><div class="stat-value">{{ ds.enCours }}</div></div>
-<div class="stat-tile fade-up d4" @click="go('retards')"><div class="stat-icon ic-red"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="stat-label">Emprunts en Retards</div><div class="stat-value">{{ ds.retards }}</div></div>
-<div class="stat-tile fade-up d5" @click="go('emprunts');empTab='attente'" style="position:relative"><div class="stat-icon" style="background:#fff3e0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="stat-label">En attente</div><div class="stat-value" :style="ds.enAttente>0?'color:#f59e0b':''">{{ ds.enAttente }}</div><span v-if="ds.enAttente>0" style="position:absolute;top:10px;right:10px;background:#ef4444;color:white;border-radius:99px;font-size:10px;font-weight:700;padding:2px 7px">!</span></div>
-</div>
-<div class="split">
-<div class="card fade-up d4">
-<div class="card-header"><h3>Accès rapide</h3></div>
-<div class="access-grid">
-<div class="access-card" @click="go('livres')"><h4>Catalogue des livres</h4><p>Ajouter et gérer les livres</p><div class="count">{{ ds.livres }}<small>livres</small></div></div>
-<div class="access-card" @click="go('utilisateurs')"><h4>Utilisateurs</h4><p>Gérer les membres inscrits</p><div class="count">{{ ds.membres }}<small>membres</small></div></div>
-<div class="access-card" @click="go('emprunts')"><h4>Emprunts</h4><p>Prêts et retours</p><div class="count">{{ ds.enCours }}<small>en cours</small></div></div>
-</div>
-</div>
-<div>
-<div class="side-card fade-up d3">
-<h4>Validation automatique</h4>
-<p>{{ autoValid ? "Chaque emprunt est traité automatiquement, sans action de votre part." : "Chaque emprunt doit être validé manuellement par l'admin" }}</p>
-<div class="toggle-row"><span style="font-size:12px;color:var(--muted);font-weight:600">Statut</span><div class="toggle" :class="{on:autoValid}" @click="toggleAutoValid()"></div></div>
-</div>
-<div class="side-card fade-up d4" v-if="ds.retards>0">
-<h4>Retards à traiter</h4>
-<p>{{ ds.retards }} emprunt(s) dépassent la date de retour prévue. Consultez l'onglet Retards pour régulariser.</p>
-</div>
-</div>
-</div>
-</section>
+          <!-- LIVRES -->
+          <section v-if="pg==='livres'">
+            <div class="page-header fade-up">
+              <div>
+                <h2>Livres</h2>
+                <p>Catalogue de la bibliothèque</p>
+              </div>
+            </div>
+            <div class="action-bar fade-up d1" v-if="isAdmin">
+              <button
+                class="btn btn-dit btn-sm"
+                style="width: auto; padding: 10px 24px"
+                @click="openLivreM()"
+              >
+                + Ajouter un livre au catalogue
+              </button>
+            </div>
+            <div class="card fade-up d2">
+              <div class="card-header">
+                <h3>Catalogue</h3>
+                <div class="search-bar">
+                  <input
+                    v-model="lQ"
+                    placeholder="Rechercher un titre, auteur, ISBN..."
+                  />
+                </div>
+              </div>
+              <div v-if="lLoad" class="loader">Chargement</div>
+              <div v-else-if="fLiv.length===0" class="empty">
+                <p>Aucun livre trouvé</p>
+              </div>
+              <table v-else>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Titre</th>
+                    <th>Auteur</th>
+                    <th>ISBN</th>
+                    <th>Année</th>
+                    <th>Qté</th>
+                    <th>Disponibles</th>
+                    <th v-if="isAdmin">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="l in fLiv" :key="l.id">
+                    <td>{{ l.id }}</td>
+                    <td><strong>{{ l.titre }}</strong></td>
+                    <td>{{ l.auteur }}</td>
+                    <td><span class="mono">{{ l.isbn }}</span></td>
+                    <td>{{ l.annee||'—' }}</td>
+                    <td>{{ l.quantite }}</td>
+                    <td>
+                      <span
+                        class="badge"
+                        :class="l.disponible>0?'badge-green':'badge-red'"
+                        ><span class="badge-dot"></span>{{ l.disponible }}/{{
+                        l.quantite }}</span
+                      >
+                    </td>
+                    <td v-if="isAdmin" class="actions">
+                      <button
+                        class="btn btn-ghost btn-sm"
+                        @click="openLivreM(l)"
+                      >
+                        Modifier</button
+                      ><button
+                        class="btn btn-danger btn-sm"
+                        @click="delLivre(l.id)"
+                      >
+                        Suppr.
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
 
-<!-- DASHBOARD ÉTUDIANT & PROF -->
-<section v-if="pg==='dashboard'&&!isAdmin">
-<div class="hero fade-up"><div><h2>Bienvenue, {{ user.prenom }} !</h2><p>Consultez les livres disponibles et gérez vos emprunts.</p></div><div class="hero-date">{{ fDate }}</div></div>
-<div class="stats-grid">
-<div class="stat-card fade-up d1" @click="go('livres')"><div class="stat-icon ic-dit"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg></div><div class="stat-label">Livres disponibles</div><div class="stat-value">{{ myS.dispo }}</div></div>
-<div class="stat-card fade-up d2" @click="go('emprunts')"><div class="stat-icon ic-amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg></div><div class="stat-label">Mes emprunts</div><div class="stat-value">{{ myS.enCours }}</div></div>
-<div class="stat-card fade-up d3"><div class="stat-icon ic-red"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="stat-label">Mes retards</div><div class="stat-value">{{ myS.retards }}</div></div>
-</div>
-<div class="card fade-up d3" style="margin-bottom:24px"><div class="card-header"><h3>Mes emprunts en cours</h3></div>
-<div v-if="myEmps.length===0" class="empty"><p>Aucun emprunt en cours</p></div>
-<table v-else><thead><tr><th>Livre</th><th>Emprunté le</th><th>Retour prévu</th><th>Statut</th></tr></thead>
-<tbody><tr v-for="e in myEmps" :key="e.id"><td><strong>{{ e._l }}</strong></td><td>{{ e.date_emprunt }}</td><td>{{ e.date_retour_prevue }}</td><td><span v-if="isLate(e)" class="badge badge-red"><span class="badge-dot"></span>En retard (+{{ lateDays(e) }}j)</span><span v-else class="badge badge-green"><span class="badge-dot"></span>En cours</span></td></tr></tbody></table></div>
-<div class="info-box fade-up d4"><h4>Vous avez des documents à partager ?</h4><p>Si vous disposez de cours, mémoires ou ouvrages à mettre à disposition de la communauté DIT, contactez l'administrateur à <a href="mailto:admin@dit.sn">admin@dit.sn</a></p></div>
-</section>
+          <!-- UTILISATEURS -->
+          <section v-if="pg==='utilisateurs'&&isAdmin">
+            <div class="page-header fade-up">
+              <div>
+                <h2>Utilisateurs</h2>
+                <p>Membres DIT inscrits à la bibliothèque</p>
+              </div>
+            </div>
+            <div class="action-bar fade-up d1">
+              <button
+                class="btn btn-dit btn-sm"
+                style="width: auto; padding: 10px 24px"
+                @click="openUserM()"
+              >
+                + Créer un accès utilisateur
+              </button>
+            </div>
+            <div class="card fade-up d2">
+              <div class="card-header"><h3>Liste des membres GROUPE 4</h3></div>
+              <div v-if="uLoad" class="loader">Chargement</div>
+              <div v-else-if="usrs.length===0" class="empty">
+                <p>Aucun membre</p>
+              </div>
+              <table v-else>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Identifiant</th>
+                    <th>Type</th>
+                    <th>Rôle</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="u in usrs" :key="u.id">
+                    <td>{{ u.id }}</td>
+                    <td><strong>{{ u.prenom }} {{ u.nom }}</strong></td>
+                    <td>{{ u.email }}</td>
+                    <td>
+                      <span class="mono"
+                        >{{ u.matricule||u.piece_identite_numero||'—' }}</span
+                      >
+                    </td>
+                    <td>
+                      <span class="badge badge-dit">{{ tLabel(u.type) }}</span>
+                    </td>
+                    <td>
+                      <span
+                        class="badge"
+                        :class="u.role==='admin'?'badge-amber':'badge-navy'"
+                        >{{ u.role }}</span
+                      >
+                    </td>
+                    <td class="actions">
+                      <button
+                        class="btn btn-ghost btn-sm"
+                        @click="openEditUser(u)"
+                      >
+                        Modifier</button
+                      ><button
+                        v-if="u.id!==user.id"
+                        class="btn btn-danger btn-sm"
+                        @click="delUser(u.id)"
+                      >
+                        Suppr.</button
+                      ><span
+                        v-else
+                        style="
+                          font-size: 11px;
+                          color: var(--muted);
+                          padding: 4px 8px;
+                        "
+                        >Vous</span
+                      >
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
 
-<!-- LIVRES -->
-<section v-if="pg==='livres'">
-<div class="page-header fade-up"><div><h2>Livres</h2><p>Catalogue de la bibliothèque</p></div></div>
-<div class="action-bar fade-up d1" v-if="isAdmin"><button class="btn btn-dit btn-sm" style="width:auto;padding:10px 24px" @click="openLivreM()">+ Ajouter un livre au catalogue</button></div>
-<div class="card fade-up d2"><div class="card-header"><h3>Catalogue</h3><div class="search-bar"><input v-model="lQ" placeholder="Rechercher un titre, auteur, ISBN..."></div></div>
-<div v-if="lLoad" class="loader">Chargement</div>
-<div v-else-if="fLiv.length===0" class="empty"><p>Aucun livre trouvé</p></div>
-<table v-else><thead><tr><th>#</th><th>Titre</th><th>Auteur</th><th>ISBN</th><th>Année</th><th>Qté</th><th>Disponibles</th><th v-if="isAdmin">Actions</th></tr></thead>
-<tbody><tr v-for="l in fLiv" :key="l.id"><td>{{ l.id }}</td><td><strong>{{ l.titre }}</strong></td><td>{{ l.auteur }}</td><td><span class="mono">{{ l.isbn }}</span></td><td>{{ l.annee||'—' }}</td><td>{{ l.quantite }}</td><td><span class="badge" :class="l.disponible>0?'badge-green':'badge-red'"><span class="badge-dot"></span>{{ l.disponible }}/{{ l.quantite }}</span></td><td v-if="isAdmin" class="actions"><button class="btn btn-ghost btn-sm" @click="openLivreM(l)">Modifier</button><button class="btn btn-danger btn-sm" @click="delLivre(l.id)">Suppr.</button></td></tr></tbody></table></div>
-</section>
+          <!-- EMPRUNTS -->
+          <section v-if="pg==='emprunts'">
+            <div class="page-header fade-up">
+              <div>
+                <h2>Emprunts LIVRES</h2>
+                <p>
+                  {{ isAdmin?'Gestion des prêts et retours':'Mes prêts de
+                  livres' }}
+                </p>
+              </div>
+            </div>
+            <div class="action-bar fade-up d1">
+              <button
+                class="btn btn-dit btn-sm"
+                style="width: auto; padding: 10px 24px"
+                @click="openEmpM()"
+              >
+                + Emprunter un livre (durée : 15 jours)
+              </button>
+            </div>
+            <div class="card fade-up d2">
+              <div
+                class="card-header"
+                style="
+                  flex-direction: column;
+                  align-items: flex-start;
+                  gap: 12px;
+                "
+              >
+                <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                  <button
+                    class="btn btn-sm"
+                    :class="empTab==='encours'?'btn-dit':'btn-ghost'"
+                    style="width: auto"
+                    @click="empTab='encours'"
+                  >
+                    En cours
+                    <span
+                      :style="'border-radius:99px;padding:1px 8px;font-size:11px;margin-left:4px;color:white;background:'+(empTab==='encours'?'rgba(255,255,255,0.3)':'var(--dit)')"
+                      >{{ empListEnCours.length }}</span
+                    >
+                  </button>
+                  <button
+                    v-if="isAdmin"
+                    class="btn btn-sm"
+                    :class="empTab==='attente'?'btn-dit':'btn-ghost'"
+                    style="width: auto; position: relative"
+                    @click="empTab='attente'"
+                  >
+                    En attente
+                    <span
+                      :style="'border-radius:99px;padding:1px 8px;font-size:11px;margin-left:4px;color:white;background:'+(empTab==='attente'?'rgba(255,255,255,0.3)':'#f59e0b')"
+                      >{{ empListAttente.length }}</span
+                    >
+                    <span
+                      v-if="empListAttente.length>0&&empTab!=='attente'"
+                      style="
+                        position: absolute;
+                        top: -4px;
+                        right: -4px;
+                        background: #ef4444;
+                        color: white;
+                        border-radius: 99px;
+                        font-size: 9px;
+                        font-weight: 700;
+                        padding: 1px 5px;
+                      "
+                      >!</span
+                    >
+                  </button>
+                  <button
+                    class="btn btn-sm"
+                    :class="empTab==='tous'?'btn-dit':'btn-ghost'"
+                    style="width: auto"
+                    @click="empTab='tous'"
+                  >
+                    Tous
+                    <span
+                      :style="'border-radius:99px;padding:1px 8px;font-size:11px;margin-left:4px;color:white;background:'+(empTab==='tous'?'rgba(255,255,255,0.3)':'var(--muted)')"
+                      >{{ empList.length }}</span
+                    >
+                  </button>
+                </div>
+              </div>
+              <div v-if="eLoad" class="loader">Chargement</div>
+              <div v-else-if="empTabList.length===0" class="empty">
+                <p>
+                  {{ empTab==='attente'?'Aucune demande en
+                  attente':empTab==='encours'?'Aucun emprunt en cours':'Aucun
+                  emprunt' }}
+                </p>
+              </div>
+              <table v-else>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Membre</th>
+                    <th>Livre</th>
+                    <th>Emprunt</th>
+                    <th>Retour prévu</th>
+                    <th>Statut</th>
+                    <th v-if="isAdmin">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="e in empTabList" :key="e.id">
+                    <td>{{ e.id }}</td>
+                    <td><strong>{{ e._m }}</strong></td>
+                    <td>{{ e._l }}</td>
+                    <td>{{ e.date_emprunt }}</td>
+                    <td>{{ e.date_retour_prevue }}</td>
+                    <td>
+                      <span v-if="!e.valide" class="badge badge-amber"
+                        ><span class="badge-dot"></span>En attente</span
+                      ><span
+                        v-else-if="e.date_retour_reelle"
+                        class="badge"
+                        :class="e.retard?'badge-amber':'badge-green'"
+                        ><span class="badge-dot"></span>{{ e.retard?'Rendu en
+                        retard':'Rendu' }}</span
+                      ><span v-else-if="isLate(e)" class="badge badge-red"
+                        ><span class="badge-dot"></span>En retard (+{{
+                        lateDays(e) }}j)</span
+                      ><span v-else class="badge badge-dit"
+                        ><span class="badge-dot"></span>En cours</span
+                      >
+                    </td>
+                    <td
+                      v-if="isAdmin"
+                      style="display: flex; gap: 6px; flex-wrap: wrap"
+                    >
+                      <button
+                        v-if="!e.valide"
+                        class="btn btn-dit btn-sm"
+                        style="width: auto"
+                        @click="validerEmprunt(e.id)"
+                      >
+                        ✓ Valider
+                      </button>
+                      <button
+                        v-if="e.valide&&!e.date_retour_reelle"
+                        class="btn btn-success btn-sm"
+                        style="width: auto"
+                        @click="retourner(e.id)"
+                      >
+                        Retour
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <section v-if="pg==='retards'&&isAdmin">
+            <div class="page-header fade-up">
+              <div>
+                <h2>Retards</h2>
+                <p>Livres non retournés dans les délais</p>
+              </div>
+            </div>
+            <div class="card fade-up d2">
+              <div class="card-header"><h3>Emprunts en retard</h3></div>
+              <div v-if="rets.length===0" class="empty">
+                <p>Aucun retard — tout est en ordre !</p>
+              </div>
+              <table v-else>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Membre</th>
+                    <th>Livre</th>
+                    <th>Retour prévu</th>
+                    <th>Jours de retard</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="e in rets" :key="e.id">
+                    <td>{{ e.id }}</td>
+                    <td><strong>{{ e._m }}</strong></td>
+                    <td>{{ e._l }}</td>
+                    <td>{{ e.date_retour_prevue }}</td>
+                    <td>
+                      <span class="badge badge-red"
+                        ><span class="badge-dot"></span>+{{ lateDays(e) }}
+                        jours</span
+                      >
+                    </td>
+                    <td>
+                      <button
+                        class="btn btn-success btn-sm"
+                        style="width: auto"
+                        @click="retourner(e.id)"
+                      >
+                        Enregistrer le retour
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </main>
+      </template>
 
-<!-- UTILISATEURS -->
-<section v-if="pg==='utilisateurs'&&isAdmin">
-<div class="page-header fade-up"><div><h2>Utilisateurs</h2><p>Membres inscrits à la bibliothèque</p></div></div>
-<div class="action-bar fade-up d1"><button class="btn btn-dit btn-sm" style="width:auto;padding:10px 24px" @click="openUserM()">+ Créer un accès utilisateur</button></div>
-<div class="card fade-up d2"><div class="card-header"><h3>Liste des membres</h3></div>
-<div v-if="uLoad" class="loader">Chargement</div>
-<div v-else-if="usrs.length===0" class="empty"><p>Aucun membre</p></div>
-<table v-else><thead><tr><th>#</th><th>Nom</th><th>Email</th><th>Identifiant</th><th>Type</th><th>Rôle</th><th>Actions</th></tr></thead>
-<tbody><tr v-for="u in usrs" :key="u.id"><td>{{ u.id }}</td><td><strong>{{ u.prenom }} {{ u.nom }}</strong></td><td>{{ u.email }}</td><td><span class="mono">{{ u.matricule||u.piece_identite_numero||'—' }}</span></td><td><span class="badge badge-dit">{{ tLabel(u.type) }}</span></td><td><span class="badge" :class="u.role==='admin'?'badge-amber':'badge-navy'">{{ u.role }}</span></td><td class="actions"><button class="btn btn-ghost btn-sm" @click="openEditUser(u)">Modifier</button><button v-if="u.id!==user.id" class="btn btn-danger btn-sm" @click="delUser(u.id)">Suppr.</button><span v-else style="font-size:11px;color:var(--muted);padding:4px 8px">Vous</span></td></tr></tbody></table></div>
-</section>
+      <!-- MODAL LIVRE -->
+      <div class="overlay" v-if="modal==='livre'" @click.self="modal=null">
+        <div class="modal">
+          <h3>{{ mL.id?'Modifier':'Ajouter' }} un livre</h3>
+          <div class="form-group">
+            <label class="form-label">Titre *</label
+            ><input
+              class="form-input"
+              v-model="mL.titre"
+              placeholder="Ex: Introduction à l'Intelligence Artificielle"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Auteur *</label
+            ><input
+              class="form-input"
+              v-model="mL.auteur"
+              placeholder="Ex: Stuart Russell, Peter Norvig"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">ISBN *</label
+            ><input
+              class="form-input"
+              v-model="mL.isbn"
+              placeholder="Ex: 978-2-10-079618-4"
+            />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Année</label
+              ><input
+                class="form-input"
+                v-model.number="mL.annee"
+                type="number"
+                placeholder="Ex: 2024"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Quantité (exemplaires)</label
+              ><input
+                class="form-input"
+                v-model.number="mL.quantite"
+                type="number"
+                min="1"
+                placeholder="Ex: 3"
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Genre</label
+            ><input
+              class="form-input"
+              v-model="mL.genre"
+              placeholder="Ex: Informatique, Science, Roman..."
+            />
+          </div>
+          <div class="modal-actions">
+            <button class="btn btn-ghost" @click="modal=null">Annuler</button
+            ><button class="btn btn-dit" style="width: auto" @click="saveLivre">
+              Enregistrer
+            </button>
+          </div>
+        </div>
+      </div>
 
-<!-- EMPRUNTS -->
-<section v-if="pg==='emprunts'">
-<div class="page-header fade-up"><div><h2>Emprunts</h2><p>{{ isAdmin?'Gestion des prêts et retours':'Mes prêts de livres' }}</p></div></div>
-<div class="action-bar fade-up d1"><button class="btn btn-dit btn-sm" style="width:auto;padding:10px 24px" @click="openEmpM()">+ Emprunter un livre (durée : 15 jours)</button></div>
-<div class="card fade-up d2">
-<div class="card-header" style="flex-direction:column;align-items:flex-start;gap:12px">
-<div style="display:flex;gap:8px;flex-wrap:wrap">
-  <button class="btn btn-sm" :class="empTab==='encours'?'btn-dit':'btn-ghost'" style="width:auto" @click="empTab='encours'">
-    En cours <span :style="'border-radius:99px;padding:1px 8px;font-size:11px;margin-left:4px;color:white;background:'+(empTab==='encours'?'rgba(255,255,255,0.3)':'var(--dit)')">{{ empListEnCours.length }}</span>
-  </button>
-  <button v-if="isAdmin" class="btn btn-sm" :class="empTab==='attente'?'btn-dit':'btn-ghost'" style="width:auto;position:relative" @click="empTab='attente'">
-    En attente <span :style="'border-radius:99px;padding:1px 8px;font-size:11px;margin-left:4px;color:white;background:'+(empTab==='attente'?'rgba(255,255,255,0.3)':'#f59e0b')">{{ empListAttente.length }}</span>
-    <span v-if="empListAttente.length>0&&empTab!=='attente'" style="position:absolute;top:-4px;right:-4px;background:#ef4444;color:white;border-radius:99px;font-size:9px;font-weight:700;padding:1px 5px">!</span>
-  </button>
-  <button class="btn btn-sm" :class="empTab==='tous'?'btn-dit':'btn-ghost'" style="width:auto" @click="empTab='tous'">
-    Tous <span :style="'border-radius:99px;padding:1px 8px;font-size:11px;margin-left:4px;color:white;background:'+(empTab==='tous'?'rgba(255,255,255,0.3)':'var(--muted)')">{{ empList.length }}</span>
-  </button>
-</div>
-</div>
-<div v-if="eLoad" class="loader">Chargement</div>
-<div v-else-if="empTabList.length===0" class="empty"><p>{{ empTab==='attente'?'Aucune demande en attente':empTab==='encours'?'Aucun emprunt en cours':'Aucun emprunt' }}</p></div>
-<table v-else><thead><tr><th>#</th><th>Membre</th><th>Livre</th><th>Emprunt</th><th>Retour prévu</th><th>Statut</th><th v-if="isAdmin">Action</th></tr></thead>
-<tbody><tr v-for="e in empTabList" :key="e.id"><td>{{ e.id }}</td><td><strong>{{ e._m }}</strong></td><td>{{ e._l }}</td><td>{{ e.date_emprunt }}</td><td>{{ e.date_retour_prevue }}</td>
-<td><span v-if="!e.valide" class="badge badge-amber"><span class="badge-dot"></span>En attente</span><span v-else-if="e.date_retour_reelle" class="badge" :class="e.retard?'badge-amber':'badge-green'"><span class="badge-dot"></span>{{ e.retard?'Rendu en retard':'Rendu' }}</span><span v-else-if="isLate(e)" class="badge badge-red"><span class="badge-dot"></span>En retard (+{{ lateDays(e) }}j)</span><span v-else class="badge badge-dit"><span class="badge-dot"></span>En cours</span></td>
-<td v-if="isAdmin" style="display:flex;gap:6px;flex-wrap:wrap">
-  <button v-if="!e.valide" class="btn btn-dit btn-sm" style="width:auto" @click="validerEmprunt(e.id)">✓ Valider</button>
-  <button v-if="e.valide&&!e.date_retour_reelle" class="btn btn-success btn-sm" style="width:auto" @click="retourner(e.id)">Retour</button>
-</td></tr></tbody></table></div>
-</section>
-<section v-if="pg==='retards'&&isAdmin">
-<div class="page-header fade-up"><div><h2>Retards</h2><p>Livres non retournés dans les délais</p></div></div>
-<div class="card fade-up d2"><div class="card-header"><h3>Emprunts en retard</h3></div>
-<div v-if="rets.length===0" class="empty"><p>Aucun retard — tout est en ordre !</p></div>
-<table v-else><thead><tr><th>#</th><th>Membre</th><th>Livre</th><th>Retour prévu</th><th>Jours de retard</th><th>Action</th></tr></thead>
-<tbody><tr v-for="e in rets" :key="e.id"><td>{{ e.id }}</td><td><strong>{{ e._m }}</strong></td><td>{{ e._l }}</td><td>{{ e.date_retour_prevue }}</td><td><span class="badge badge-red"><span class="badge-dot"></span>+{{ lateDays(e) }} jours</span></td><td><button class="btn btn-success btn-sm" style="width:auto" @click="retourner(e.id)">Enregistrer le retour</button></td></tr></tbody></table></div>
-</section>
+      <!-- MODAL USER (admin crée un accès) -->
+      <div class="overlay" v-if="modal==='user'" @click.self="modal=null">
+        <div class="modal">
+          <h3>Créer un accès utilisateur</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nom *</label
+              ><input class="form-input" v-model="mU.nom" placeholder="DIOP" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Prénom *</label
+              ><input
+                class="form-input"
+                v-model="mU.prenom"
+                placeholder="Seynabou"
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email *</label
+            ><input
+              class="form-input"
+              v-model="mU.email"
+              type="email"
+              placeholder="seynabou@dit.sn"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mot de passe temporaire *</label
+            ><input
+              class="form-input"
+              v-model="mU.mdp"
+              type="text"
+              placeholder="Ex: TempDIT2026"
+            />
+            <div class="form-hint">
+              L'utilisateur devra le changer après sa première connexion
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Type</label
+              ><select class="form-select" v-model="mU.type">
+                <option value="etudiant">Étudiant</option>
+                <option value="professeur">Professeur</option>
+                <option value="personnel_administratif">Administrateur</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Téléphone *</label
+              ><input
+                class="form-input"
+                v-model="mU.telephone"
+                placeholder="+221 77..."
+              />
+            </div>
+          </div>
+          <div class="form-group" v-if="mU.type==='etudiant'">
+            <label class="form-label">Matricule *</label
+            ><input
+              class="form-input"
+              v-model="mU.matricule"
+              placeholder="Ex: NE2510081"
+            />
+          </div>
+          <div
+            class="form-row"
+            v-if="mU.type!=='etudiant'&&mU.type!=='personnel_administratif'"
+          >
+            <div class="form-group">
+              <label class="form-label">Type pièce</label
+              ><select class="form-select" v-model="mU.piece_type">
+                <option value="CNI">CNI</option>
+                <option value="Passeport">Passeport</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">N° pièce</label
+              ><input
+                class="form-input"
+                v-model="mU.piece_num"
+                placeholder="SN-123456789"
+              />
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button class="btn btn-ghost" @click="modal=null">Annuler</button
+            ><button class="btn btn-dit" style="width: auto" @click="saveUser">
+              Créer l'accès
+            </button>
+          </div>
+        </div>
+      </div>
 
-</main>
-</template>
+      <!-- MODAL MODIFIER UTILISATEUR -->
+      <div class="overlay" v-if="modal==='edituser'" @click.self="modal=null">
+        <div class="modal">
+          <h3>Modifier l'utilisateur</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nom</label
+              ><input class="form-input" v-model="mUE.nom" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Prénom</label
+              ><input class="form-input" v-model="mUE.prenom" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label
+            ><input class="form-input" v-model="mUE.email" type="email" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Téléphone</label
+              ><input class="form-input" v-model="mUE.telephone" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Type</label
+              ><select class="form-select" v-model="mUE.type">
+                <option value="etudiant">Étudiant</option>
+                <option value="professeur">Professeur</option>
+                <option value="personnel_administratif">Administrateur</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button class="btn btn-ghost" @click="modal=null">Annuler</button
+            ><button
+              class="btn btn-dit"
+              style="width: auto"
+              @click="saveEditUser"
+            >
+              Enregistrer
+            </button>
+          </div>
+        </div>
+      </div>
 
-<!-- MODAL LIVRE -->
-<div class="overlay" v-if="modal==='livre'" @click.self="modal=null"><div class="modal"><h3>{{ mL.id?'Modifier':'Ajouter' }} un livre</h3>
-<div class="form-group"><label class="form-label">Titre *</label><input class="form-input" v-model="mL.titre" placeholder="Ex: Introduction à l'Intelligence Artificielle"></div>
-<div class="form-group"><label class="form-label">Auteur *</label><input class="form-input" v-model="mL.auteur" placeholder="Ex: Stuart Russell, Peter Norvig"></div>
-<div class="form-group"><label class="form-label">ISBN *</label><input class="form-input" v-model="mL.isbn" placeholder="Ex: 978-2-10-079618-4"></div>
-<div class="form-row"><div class="form-group"><label class="form-label">Année</label><input class="form-input" v-model.number="mL.annee" type="number" placeholder="Ex: 2024"></div><div class="form-group"><label class="form-label">Quantité (exemplaires)</label><input class="form-input" v-model.number="mL.quantite" type="number" min="1" placeholder="Ex: 3"></div></div>
-<div class="form-group"><label class="form-label">Genre</label><input class="form-input" v-model="mL.genre" placeholder="Ex: Informatique, Science, Roman..."></div>
-<div class="modal-actions"><button class="btn btn-ghost" @click="modal=null">Annuler</button><button class="btn btn-dit" style="width:auto" @click="saveLivre">Enregistrer</button></div></div></div>
+      <!-- MODAL EMPRUNT -->
+      <div class="overlay" v-if="modal==='emprunt'" @click.self="modal=null">
+        <div class="modal">
+          <h3>Nouvel emprunt</h3>
+          <div class="form-group" v-if="isAdmin">
+            <label class="form-label">Membre</label
+            ><select class="form-select" v-model.number="mE.uid">
+              <option :value="null" disabled>— Sélectionner un membre —</option>
+              <option v-for="u in usrs" :key="u.id" :value="u.id">
+                {{ u.prenom }} {{ u.nom }} ({{ u.email }})
+              </option>
+            </select>
+          </div>
+          <div class="form-group" v-else>
+            <label class="form-label">Emprunteur</label
+            ><input
+              class="form-input"
+              :value="user.prenom+' '+user.nom"
+              disabled
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Livre disponible</label
+            ><select class="form-select" v-model.number="mE.lid">
+              <option :value="null" disabled>— Sélectionner un livre —</option>
+              <option v-for="l in livDispo" :key="l.id" :value="l.id">
+                {{ l.titre }} — {{ l.auteur }}
+              </option>
+            </select>
+          </div>
+          <div class="form-hint" style="margin-bottom: 14px; margin-top: 8px">
+            📅 Durée de l'emprunt : <strong>15 jours</strong> à partir
+            d'aujourd'hui
+          </div>
+          <div class="modal-actions">
+            <button class="btn btn-ghost" @click="modal=null">Annuler</button
+            ><button class="btn btn-dit" style="width: auto" @click="saveEmp">
+              Confirmer l'emprunt
+            </button>
+          </div>
+        </div>
+      </div>
 
-<!-- MODAL USER (admin crée un accès) -->
-<div class="overlay" v-if="modal==='user'" @click.self="modal=null"><div class="modal"><h3>Créer un accès utilisateur</h3>
-<div class="form-row"><div class="form-group"><label class="form-label">Nom *</label><input class="form-input" v-model="mU.nom" placeholder="DIOP"></div><div class="form-group"><label class="form-label">Prénom *</label><input class="form-input" v-model="mU.prenom" placeholder="Seynabou"></div></div>
-<div class="form-group"><label class="form-label">Email *</label><input class="form-input" v-model="mU.email" type="email" placeholder="seynabou@dit.sn"></div>
-<div class="form-group"><label class="form-label">Mot de passe temporaire *</label><input class="form-input" v-model="mU.mdp" type="text" placeholder="Ex: TempDIT2026"><div class="form-hint">L'utilisateur devra le changer après sa première connexion</div></div>
-<div class="form-row"><div class="form-group"><label class="form-label">Type</label><select class="form-select" v-model="mU.type"><option value="etudiant">Étudiant</option><option value="professeur">Professeur</option><option value="personnel_administratif">Administrateur</option></select></div><div class="form-group"><label class="form-label">Téléphone *</label><input class="form-input" v-model="mU.telephone" placeholder="+221 77..."></div></div>
-<div class="form-group" v-if="mU.type==='etudiant'"><label class="form-label">Matricule *</label><input class="form-input" v-model="mU.matricule" placeholder="Ex: NE2510081"></div>
-<div class="form-row" v-if="mU.type!=='etudiant'&&mU.type!=='personnel_administratif'"><div class="form-group"><label class="form-label">Type pièce</label><select class="form-select" v-model="mU.piece_type"><option value="CNI">CNI</option><option value="Passeport">Passeport</option></select></div><div class="form-group"><label class="form-label">N° pièce</label><input class="form-input" v-model="mU.piece_num" placeholder="SN-123456789"></div></div>
-<div class="modal-actions"><button class="btn btn-ghost" @click="modal=null">Annuler</button><button class="btn btn-dit" style="width:auto" @click="saveUser">Créer l'accès</button></div></div></div>
+      <div class="overlay" v-if="modal==='changerMdp'" style="z-index: 9999">
+        <div class="modal">
+          <h3 style="color: var(--danger)">
+            🔒 Changement de mot de passe requis
+          </h3>
+          <p style="font-size: 13px; color: var(--muted); margin-bottom: 16px">
+            Votre compte a été créé avec un mot de passe temporaire. Vous devez
+            le modifier avant de continuer.
+          </p>
+          <div class="form-group">
+            <label class="form-label">Mot de passe temporaire *</label
+            ><input
+              class="form-input"
+              v-model="mdpF.ancien"
+              type="password"
+              placeholder="Mot de passe reçu"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nouveau mot de passe *</label
+            ><input
+              class="form-input"
+              v-model="mdpF.nouveau"
+              type="password"
+              placeholder="Minimum 6 caractères"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirmer le nouveau mot de passe *</label
+            ><input
+              class="form-input"
+              v-model="mdpF.confirm"
+              type="password"
+              placeholder="Retapez le nouveau mot de passe"
+              @keyup.enter="doChangerMdp"
+            />
+          </div>
+          <p
+            v-if="mdpErr"
+            style="color: var(--danger); font-size: 12px; margin-top: 4px"
+          >
+            {{ mdpErr }}
+          </p>
+          <div class="modal-actions">
+            <button
+              class="btn btn-dit"
+              style="width: auto"
+              @click="doChangerMdp"
+              :disabled="mdpLoad"
+            >
+              {{ mdpLoad?'Enregistrement...':'Changer mon mot de passe' }}
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="toast-container">
+        <div v-for="t in toasts" :key="t.id" class="toast" :class="t.type">
+          {{ t.msg }}
+        </div>
+      </div>
+    </div>
 
-<!-- MODAL MODIFIER UTILISATEUR -->
-<div class="overlay" v-if="modal==='edituser'" @click.self="modal=null"><div class="modal"><h3>Modifier l'utilisateur</h3>
-<div class="form-row"><div class="form-group"><label class="form-label">Nom</label><input class="form-input" v-model="mUE.nom"></div><div class="form-group"><label class="form-label">Prénom</label><input class="form-input" v-model="mUE.prenom"></div></div>
-<div class="form-group"><label class="form-label">Email</label><input class="form-input" v-model="mUE.email" type="email"></div>
-<div class="form-row"><div class="form-group"><label class="form-label">Téléphone</label><input class="form-input" v-model="mUE.telephone"></div><div class="form-group"><label class="form-label">Type</label><select class="form-select" v-model="mUE.type"><option value="etudiant">Étudiant</option><option value="professeur">Professeur</option><option value="personnel_administratif">Administrateur</option></select></div></div>
-<div class="modal-actions"><button class="btn btn-ghost" @click="modal=null">Annuler</button><button class="btn btn-dit" style="width:auto" @click="saveEditUser">Enregistrer</button></div></div></div>
+    <script>
+      const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400"><defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1e3a8a"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient></defs><rect width="400" height="400" rx="48" fill="url(#bg)"/><g transform="translate(200,155)" text-anchor="middle"><text font-family="Arial,sans-serif" font-weight="900" font-size="150" fill="#fff" dy=".35em" letter-spacing="-4">DIT</text></g><rect x="55" y="250" width="290" height="3" rx="1.5" fill="rgba(255,255,255,.2)"/><g transform="translate(200,295)" text-anchor="middle"><text font-family="Arial,sans-serif" font-weight="600" font-size="23" fill="rgba(255,255,255,.65)" letter-spacing="7">DAKAR INSTITUTE</text></g><g transform="translate(200,330)" text-anchor="middle"><text font-family="Arial,sans-serif" font-weight="600" font-size="23" fill="rgba(255,255,255,.65)" letter-spacing="7">OF TECHNOLOGY</text></g></svg>`;
 
-<!-- MODAL EMPRUNT -->
-<div class="overlay" v-if="modal==='emprunt'" @click.self="modal=null"><div class="modal"><h3>Nouvel emprunt</h3>
-<div class="form-group" v-if="isAdmin"><label class="form-label">Membre</label><select class="form-select" v-model.number="mE.uid"><option :value="null" disabled>— Sélectionner un membre —</option><option v-for="u in usrs" :key="u.id" :value="u.id">{{ u.prenom }} {{ u.nom }} ({{ u.email }})</option></select></div>
-<div class="form-group" v-else><label class="form-label">Emprunteur</label><input class="form-input" :value="user.prenom+' '+user.nom" disabled></div>
-<div class="form-group"><label class="form-label">Livre disponible</label><select class="form-select" v-model.number="mE.lid"><option :value="null" disabled>— Sélectionner un livre —</option><option v-for="l in livDispo" :key="l.id" :value="l.id">{{ l.titre }} — {{ l.auteur }}</option></select></div>
-<div class="form-hint" style="margin-bottom:14px;margin-top:8px">📅 Durée de l'emprunt : <strong>15 jours</strong> à partir d'aujourd'hui</div>
-<div class="modal-actions"><button class="btn btn-ghost" @click="modal=null">Annuler</button><button class="btn btn-dit" style="width:auto" @click="saveEmp">Confirmer l'emprunt</button></div></div></div>
+      const { createApp, ref, reactive, computed, onMounted } = Vue;
+      const P = { livres: 8001, utilisateurs: 8002, emprunts: 8003 };
+      function U(s) {
+        return location.protocol + "//" + location.hostname + ":" + P[s];
+      }
 
-<div class="overlay" v-if="modal==='changerMdp'" style="z-index:9999"><div class="modal"><h3 style="color:var(--danger)">🔒 Changement de mot de passe requis</h3><p style="font-size:13px;color:var(--muted);margin-bottom:16px">Votre compte a été créé avec un mot de passe temporaire. Vous devez le modifier avant de continuer.</p><div class="form-group"><label class="form-label">Mot de passe temporaire *</label><input class="form-input" v-model="mdpF.ancien" type="password" placeholder="Mot de passe reçu"></div><div class="form-group"><label class="form-label">Nouveau mot de passe *</label><input class="form-input" v-model="mdpF.nouveau" type="password" placeholder="Minimum 6 caractères"></div><div class="form-group"><label class="form-label">Confirmer le nouveau mot de passe *</label><input class="form-input" v-model="mdpF.confirm" type="password" placeholder="Retapez le nouveau mot de passe" @keyup.enter="doChangerMdp"></div><p v-if="mdpErr" style="color:var(--danger);font-size:12px;margin-top:4px">{{ mdpErr }}</p><div class="modal-actions"><button class="btn btn-dit" style="width:auto" @click="doChangerMdp" :disabled="mdpLoad">{{ mdpLoad?'Enregistrement...':'Changer mon mot de passe' }}</button></div></div></div>
-<div class="toast-container"><div v-for="t in toasts" :key="t.id" class="toast" :class="t.type">{{ t.msg }}</div></div>
-</div>
+      createApp({
+        setup() {
+          const LOGO = ref("data:image/svg+xml;base64," + btoa(LOGO_SVG));
+          const user = ref(null),
+            token = ref(null),
+            pg = ref("dashboard"),
+            modal = ref(null),
+            toasts = ref([]);
+          let tid = 0;
 
-<script>
-const LOGO_SVG=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400"><defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1e3a8a"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient></defs><rect width="400" height="400" rx="48" fill="url(#bg)"/><g transform="translate(200,155)" text-anchor="middle"><text font-family="Arial,sans-serif" font-weight="900" font-size="150" fill="#fff" dy=".35em" letter-spacing="-4">DIT</text></g><rect x="55" y="250" width="290" height="3" rx="1.5" fill="rgba(255,255,255,.2)"/><g transform="translate(200,295)" text-anchor="middle"><text font-family="Arial,sans-serif" font-weight="600" font-size="23" fill="rgba(255,255,255,.65)" letter-spacing="7">DAKAR INSTITUTE</text></g><g transform="translate(200,330)" text-anchor="middle"><text font-family="Arial,sans-serif" font-weight="600" font-size="23" fill="rgba(255,255,255,.65)" letter-spacing="7">OF TECHNOLOGY</text></g></svg>`;
+          async function api(s, p, m = "GET", b = null) {
+            const o = {
+              method: m,
+              headers: { "Content-Type": "application/json" },
+            };
+            if (token.value)
+              o.headers["Authorization"] = "Bearer " + token.value;
+            if (b) o.body = JSON.stringify(b);
+            let r;
+            try {
+              r = await fetch(U(s) + p, o);
+            } catch (netErr) {
+              throw new Error(
+                "Service indisponible (" +
+                  s +
+                  " sur " +
+                  U(s) +
+                  "). Vérifiez que Docker est démarré.",
+              );
+            }
+            if (!r.ok) {
+              const e = await r.json().catch(() => ({}));
+              throw new Error(e.detail || "Erreur HTTP " + r.status);
+            }
+            if (r.status === 204) return null;
+            const ct = r.headers.get("content-type");
+            if (ct && ct.includes("json")) return r.json();
+            return null;
+          }
+          const authMode = ref("login"),
+            authErr = ref(""),
+            authLoad = ref(false),
+            showForgot = ref(false);
+          const mdpF = reactive({ ancien: "", nouveau: "", confirm: "" });
+          const mdpErr = ref("");
+          const mdpLoad = ref(false);
+          const loginF = reactive({ email: "", mdp: "" });
+          const regF = reactive({
+            nom: "",
+            prenom: "",
+            email: "",
+            mdp: "",
+            mdp2: "",
+            telephone: "",
+            type: "etudiant",
+            matricule: "",
+            piece_type: "CNI",
+            piece_num: "",
+          });
+          const livres = ref([]),
+            usrs = ref([]),
+            emps = ref([]),
+            rets = ref([]);
+          const lLoad = ref(false),
+            uLoad = ref(false),
+            eLoad = ref(false);
+          const lQ = ref(""),
+            autoValid = ref(true),
+            empTab = ref("encours");
+          const ds = reactive({
+            livres: 0,
+            membres: 0,
+            enCours: 0,
+            retards: 0,
+            enAttente: 0,
+          });
+          const mL = reactive({
+            id: null,
+            titre: "",
+            auteur: "",
+            isbn: "",
+            annee: null,
+            genre: "",
+            quantite: 1,
+          });
+          const mU = reactive({
+            nom: "",
+            prenom: "",
+            email: "",
+            mdp: "",
+            telephone: "",
+            type: "etudiant",
+            matricule: "",
+            piece_type: "CNI",
+            piece_num: "",
+          });
+          const mE = reactive({ uid: null, lid: null });
+          const myEmps = ref([]),
+            myS = reactive({ dispo: 0, enCours: 0, retards: 0 });
 
-const{createApp,ref,reactive,computed,onMounted}=Vue;
-const P={livres:8001,utilisateurs:8002,emprunts:8003};
-function U(s){return location.protocol+'//'+location.hostname+':'+P[s]}
+          const isAdmin = computed(() => user.value?.role === "admin");
+          const uInit = computed(() =>
+            user.value
+              ? (
+                  (user.value.prenom?.[0] || "") + (user.value.nom?.[0] || "")
+                ).toUpperCase()
+              : "",
+          );
+          const roleLabel = computed(() => {
+            if (!user.value) return "";
+            if (user.value.role === "admin") return "Administrateur DIT";
+            return (
+              {
+                etudiant: "Étudiant DIT",
+                professeur: "Enseignant DIT",
+                personnel_administratif: "Administrateur DIT",
+              }[user.value.type] || "Membre DIT"
+            );
+          });
+          const fDate = computed(() =>
+            new Date().toLocaleDateString("fr-FR", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }),
+          );
+          const fLiv = computed(() => {
+            const q = lQ.value.toLowerCase();
+            if (!q) return livres.value;
+            return livres.value.filter(
+              (l) =>
+                (l.titre || "").toLowerCase().includes(q) ||
+                (l.auteur || "").toLowerCase().includes(q) ||
+                (l.isbn || "").toLowerCase().includes(q),
+            );
+          });
+          const livDispo = computed(() =>
+            livres.value.filter((l) => l.disponible > 0),
+          );
+          const retC = computed(() => rets.value.length);
+          const empList = computed(() => {
+            if (isAdmin.value) return emps.value;
+            return emps.value.filter(
+              (e) => e.utilisateur_id === user.value?.id,
+            );
+          });
+          const empListEnCours = computed(() =>
+            empList.value.filter((e) => e.valide && !e.date_retour_reelle),
+          );
+          const empListAttente = computed(() =>
+            empList.value.filter((e) => !e.valide),
+          );
+          const empTabList = computed(() => {
+            if (empTab.value === "encours") return empListEnCours.value;
+            if (empTab.value === "attente") return empListAttente.value;
+            return empList.value;
+          });
 
-createApp({setup(){
-const LOGO=ref('data:image/svg+xml;base64,'+btoa(LOGO_SVG));
-const user=ref(null),token=ref(null),pg=ref('dashboard'),modal=ref(null),toasts=ref([]);let tid=0;
+          function toast(m, t = "success") {
+            const id = ++tid;
+            toasts.value.push({ id, msg: m, type: t });
+            setTimeout(() => {
+              toasts.value = toasts.value.filter((x) => x.id !== id);
+            }, 3500);
+          }
+          function tLabel(t) {
+            return (
+              {
+                etudiant: "Étudiant",
+                professeur: "Professeur",
+                personnel_administratif: "Admin.",
+              }[t] || t
+            );
+          }
+          function isLate(e) {
+            return (
+              !e.date_retour_reelle &&
+              new Date(e.date_retour_prevue) < new Date()
+            );
+          }
+          function lateDays(e) {
+            const p = new Date(e.date_retour_prevue),
+              n = e.date_retour_reelle
+                ? new Date(e.date_retour_reelle)
+                : new Date();
+            return Math.max(0, Math.floor((n - p) / 864e5));
+          }
+          function go(p) {
+            pg.value = p;
+            if (p === "dashboard") ldDash();
+            else if (p === "livres") ldLiv();
+            else if (p === "utilisateurs") ldUsr();
+            else if (p === "emprunts") ldEmp();
+            else if (p === "retards") ldRet();
+          }
 
-async function api(s,p,m='GET',b=null){
-  const o={method:m,headers:{'Content-Type':'application/json'}};
-  if(token.value)o.headers['Authorization']='Bearer '+token.value;
-  if(b)o.body=JSON.stringify(b);
-  let r;
-  try{r=await fetch(U(s)+p,o)}catch(netErr){throw new Error('Service indisponible ('+s+' sur '+U(s)+'). Vérifiez que Docker est démarré.')}
-  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.detail||'Erreur HTTP '+r.status)}
-  if(r.status===204)return null;
-  const ct=r.headers.get('content-type');
-  if(ct&&ct.includes('json'))return r.json();
-  return null;
-}
-const authMode=ref('login'),authErr=ref(''),authLoad=ref(false),showForgot=ref(false);
-const mdpF=reactive({ancien:'',nouveau:'',confirm:''});const mdpErr=ref('');const mdpLoad=ref(false);
-const loginF=reactive({email:'',mdp:''});
-const regF=reactive({nom:'',prenom:'',email:'',mdp:'',mdp2:'',telephone:'',type:'etudiant',matricule:'',piece_type:'CNI',piece_num:''});
-const livres=ref([]),usrs=ref([]),emps=ref([]),rets=ref([]);
-const lLoad=ref(false),uLoad=ref(false),eLoad=ref(false);
-const lQ=ref(''),autoValid=ref(true),empTab=ref('encours');
-const ds=reactive({livres:0,membres:0,enCours:0,retards:0,enAttente:0});
-const mL=reactive({id:null,titre:'',auteur:'',isbn:'',annee:null,genre:'',quantite:1});
-const mU=reactive({nom:'',prenom:'',email:'',mdp:'',telephone:'',type:'etudiant',matricule:'',piece_type:'CNI',piece_num:''});
-const mE=reactive({uid:null,lid:null});
-const myEmps=ref([]),myS=reactive({dispo:0,enCours:0,retards:0});
+          // Enrich emprunts with user/book names
+          async function enrich(list) {
+            const uids = [...new Set(list.map((e) => e.utilisateur_id))];
+            const lids = [...new Set(list.map((e) => e.livre_id))];
+            const us = await Promise.all(
+              uids.map((i) =>
+                api("utilisateurs", "/utilisateurs/" + i).catch(() => null),
+              ),
+            );
+            const ls = await Promise.all(
+              lids.map((i) => api("livres", "/livres/" + i).catch(() => null)),
+            );
+            const um = {},
+              lm = {};
+            uids.forEach((id, i) => {
+              if (us[i]) um[id] = us[i].prenom + " " + us[i].nom;
+            });
+            lids.forEach((id, i) => {
+              if (ls[i]) lm[id] = ls[i].titre;
+            });
+            return list.map((e) => ({
+              ...e,
+              _m: um[e.utilisateur_id] || "#" + e.utilisateur_id,
+              _l: lm[e.livre_id] || "#" + e.livre_id,
+            }));
+          }
 
-const isAdmin=computed(()=>user.value?.role==='admin');
-const uInit=computed(()=>user.value?((user.value.prenom?.[0]||'')+(user.value.nom?.[0]||'')).toUpperCase():'');
-const roleLabel=computed(()=>{if(!user.value)return '';if(user.value.role==='admin')return 'Administrateur DIT';return{etudiant:'Étudiant DIT',professeur:'Enseignant DIT',personnel_administratif:'Administrateur DIT'}[user.value.type]||'Membre DIT'});
-const fDate=computed(()=>new Date().toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'}));
-const fLiv=computed(()=>{const q=lQ.value.toLowerCase();if(!q)return livres.value;return livres.value.filter(l=>(l.titre||'').toLowerCase().includes(q)||(l.auteur||'').toLowerCase().includes(q)||(l.isbn||'').toLowerCase().includes(q))});
-const livDispo=computed(()=>livres.value.filter(l=>l.disponible>0));
-const retC=computed(()=>rets.value.length);
-const empList=computed(()=>{if(isAdmin.value)return emps.value;return emps.value.filter(e=>e.utilisateur_id===user.value?.id)});
-const empListEnCours=computed(()=>empList.value.filter(e=>e.valide&&!e.date_retour_reelle));
-const empListAttente=computed(()=>empList.value.filter(e=>!e.valide));
-const empTabList=computed(()=>{
-  if(empTab.value==='encours')return empListEnCours.value;
-  if(empTab.value==='attente')return empListAttente.value;
-  return empList.value;
-});
+          // AUTH
+          async function doLogin() {
+            if (!loginF.email || !loginF.mdp) {
+              authErr.value = "Email et mot de passe requis";
+              return;
+            }
+            authLoad.value = true;
+            authErr.value = "";
+            try {
+              const r = await api("utilisateurs", "/auth/login", "POST", {
+                email: loginF.email,
+                mot_de_passe: loginF.mdp,
+              });
+              token.value = r.access_token;
+              user.value = r.user;
+              localStorage.setItem("bt", r.access_token);
+              localStorage.setItem("bu", JSON.stringify(r.user));
+              if (r.user.mot_de_passe_temporaire) {
+                modal.value = "changerMdp";
+                Object.assign(mdpF, { ancien: "", nouveau: "", confirm: "" });
+                mdpErr.value = "";
+              } else {
+                ldDash();
+              }
+            } catch (e) {
+              authErr.value = e.message;
+            } finally {
+              authLoad.value = false;
+            }
+          }
 
-function toast(m,t='success'){const id=++tid;toasts.value.push({id,msg:m,type:t});setTimeout(()=>{toasts.value=toasts.value.filter(x=>x.id!==id)},3500)}
-function tLabel(t){return{etudiant:'Étudiant',professeur:'Professeur',personnel_administratif:'Admin.'}[t]||t}
-function isLate(e){return !e.date_retour_reelle&&new Date(e.date_retour_prevue)<new Date()}
-function lateDays(e){const p=new Date(e.date_retour_prevue),n=e.date_retour_reelle?new Date(e.date_retour_reelle):new Date();return Math.max(0,Math.floor((n-p)/864e5))}
-function go(p){pg.value=p;if(p==='dashboard')ldDash();else if(p==='livres')ldLiv();else if(p==='utilisateurs')ldUsr();else if(p==='emprunts')ldEmp();else if(p==='retards')ldRet()}
+          async function doRegister() {
+            if (
+              !regF.nom ||
+              !regF.prenom ||
+              !regF.telephone ||
+              !regF.email ||
+              !regF.mdp
+            ) {
+              authErr.value = "Remplissez tous les champs obligatoires";
+              return;
+            }
+            if (regF.mdp !== regF.mdp2) {
+              authErr.value = "Les mots de passe ne correspondent pas";
+              return;
+            }
+            if (regF.type === "etudiant" && !regF.matricule) {
+              authErr.value = "Le matricule est obligatoire pour les étudiants";
+              return;
+            }
+            if (regF.type !== "etudiant" && !regF.piece_num) {
+              authErr.value = "Le numéro de pièce d'identité est obligatoire";
+              return;
+            }
+            authLoad.value = true;
+            authErr.value = "";
+            try {
+              const b = {
+                nom: regF.nom,
+                prenom: regF.prenom,
+                email: regF.email,
+                mot_de_passe: regF.mdp,
+                telephone: regF.telephone || null,
+                type: regF.type,
+              };
+              if (regF.type === "etudiant") {
+                b.matricule = regF.matricule;
+                b.piece_identite_type = null;
+                b.piece_identite_numero = null;
+              } else {
+                b.matricule = null;
+                b.piece_identite_type = regF.piece_type;
+                b.piece_identite_numero = regF.piece_num;
+              }
+              const r = await api("utilisateurs", "/auth/register", "POST", b);
+              token.value = r.access_token;
+              user.value = r.user;
+              localStorage.setItem("bt", r.access_token);
+              localStorage.setItem("bu", JSON.stringify(r.user));
+              ldDash();
+            } catch (e) {
+              authErr.value = e.message;
+            } finally {
+              authLoad.value = false;
+            }
+          }
 
-// Enrich emprunts with user/book names
-async function enrich(list){
-  const uids=[...new Set(list.map(e=>e.utilisateur_id))];
-  const lids=[...new Set(list.map(e=>e.livre_id))];
-  const us=await Promise.all(uids.map(i=>api('utilisateurs','/utilisateurs/'+i).catch(()=>null)));
-  const ls=await Promise.all(lids.map(i=>api('livres','/livres/'+i).catch(()=>null)));
-  const um={},lm={};
-  uids.forEach((id,i)=>{if(us[i])um[id]=us[i].prenom+' '+us[i].nom});
-  lids.forEach((id,i)=>{if(ls[i])lm[id]=ls[i].titre});
-  return list.map(e=>({...e,_m:um[e.utilisateur_id]||'#'+e.utilisateur_id,_l:lm[e.livre_id]||'#'+e.livre_id}));
-}
+          async function doChangerMdp() {
+            if (!mdpF.ancien || !mdpF.nouveau || !mdpF.confirm) {
+              mdpErr.value = "Tous les champs sont obligatoires";
+              return;
+            }
+            if (mdpF.nouveau !== mdpF.confirm) {
+              mdpErr.value = "Les mots de passe ne correspondent pas";
+              return;
+            }
+            if (mdpF.nouveau.length < 6) {
+              mdpErr.value =
+                "Le nouveau mot de passe doit contenir au moins 6 caractères";
+              return;
+            }
+            mdpLoad.value = true;
+            mdpErr.value = "";
+            try {
+              const updated = await api(
+                "utilisateurs",
+                "/auth/changer-mot-de-passe",
+                "POST",
+                {
+                  ancien_mot_de_passe: mdpF.ancien,
+                  nouveau_mot_de_passe: mdpF.nouveau,
+                },
+              );
+              user.value = updated;
+              localStorage.setItem("bu", JSON.stringify(updated));
+              modal.value = null;
+              toast("Mot de passe mis à jour avec succès");
+              ldDash();
+            } catch (e) {
+              mdpErr.value = e.message;
+            } finally {
+              mdpLoad.value = false;
+            }
+          }
+          function logout() {
+            user.value = null;
+            token.value = null;
+            localStorage.removeItem("bt");
+            localStorage.removeItem("bu");
+          }
 
-// AUTH
-async function doLogin(){if(!loginF.email||!loginF.mdp){authErr.value='Email et mot de passe requis';return}authLoad.value=true;authErr.value='';try{const r=await api('utilisateurs','/auth/login','POST',{email:loginF.email,mot_de_passe:loginF.mdp});token.value=r.access_token;user.value=r.user;localStorage.setItem('bt',r.access_token);localStorage.setItem('bu',JSON.stringify(r.user));if(r.user.mot_de_passe_temporaire){modal.value='changerMdp';Object.assign(mdpF,{ancien:'',nouveau:'',confirm:''});mdpErr.value=''}else{ldDash()}}catch(e){authErr.value=e.message}finally{authLoad.value=false}}
+          // DATA LOADING
+          async function ldLiv() {
+            lLoad.value = true;
+            try {
+              livres.value = await api("livres", "/livres");
+            } catch (e) {
+              toast(e.message, "error");
+            } finally {
+              lLoad.value = false;
+            }
+          }
+          async function ldUsr() {
+            uLoad.value = true;
+            try {
+              usrs.value = await api("utilisateurs", "/utilisateurs");
+            } catch (e) {
+              toast(e.message, "error");
+            } finally {
+              uLoad.value = false;
+            }
+          }
+          async function ldEmp() {
+            eLoad.value = true;
+            try {
+              emps.value = await enrich(await api("emprunts", "/emprunts"));
+            } catch (e) {
+              toast(e.message, "error");
+            } finally {
+              eLoad.value = false;
+            }
+          }
+          async function ldRet() {
+            try {
+              const r = await api("emprunts", "/emprunts/retards");
+              rets.value = await enrich(r);
+            } catch (e) {
+              toast(e.message, "error");
+            }
+          }
 
-async function doRegister(){
-  if(!regF.nom||!regF.prenom||!regF.telephone||!regF.email||!regF.mdp){authErr.value='Remplissez tous les champs obligatoires';return}
-  if(regF.mdp!==regF.mdp2){authErr.value='Les mots de passe ne correspondent pas';return}
-  if(regF.type==='etudiant'&&!regF.matricule){authErr.value='Le matricule est obligatoire pour les étudiants';return}
-  if(regF.type!=='etudiant'&&!regF.piece_num){authErr.value='Le numéro de pièce d\'identité est obligatoire';return}
-  authLoad.value=true;authErr.value='';
-  try{
-    const b={nom:regF.nom,prenom:regF.prenom,email:regF.email,mot_de_passe:regF.mdp,telephone:regF.telephone||null,type:regF.type};
-    if(regF.type==='etudiant'){b.matricule=regF.matricule;b.piece_identite_type=null;b.piece_identite_numero=null}
-    else{b.matricule=null;b.piece_identite_type=regF.piece_type;b.piece_identite_numero=regF.piece_num}
-    const r=await api('utilisateurs','/auth/register','POST',b);
-    token.value=r.access_token;user.value=r.user;localStorage.setItem('bt',r.access_token);localStorage.setItem('bu',JSON.stringify(r.user));ldDash()
-  }catch(e){authErr.value=e.message}finally{authLoad.value=false}
-}
+          async function ldDash() {
+            try {
+              const b = await api("livres", "/livres").catch(() => []);
+              livres.value = b;
+              if (isAdmin.value) {
+                const u = await api("utilisateurs", "/utilisateurs").catch(
+                  () => [],
+                );
+                usrs.value = u;
+                const c = await api("emprunts", "/emprunts/en-cours").catch(
+                  () => [],
+                );
+                const r = await api("emprunts", "/emprunts/retards").catch(
+                  () => [],
+                );
+                const a = await api("emprunts", "/emprunts/en-attente").catch(
+                  () => [],
+                );
+                const cfg = await api(
+                  "emprunts",
+                  "/config/auto-validation",
+                ).catch(() => ({ auto_validation: true }));
+                rets.value = await enrich(r);
+                autoValid.value = cfg.auto_validation;
+                ds.livres = b.length;
+                ds.membres = u.length;
+                ds.enCours = c.length;
+                ds.retards = r.length;
+                ds.enAttente = a.length;
+              } else {
+                const uid = user.value.id;
+                let me = [];
+                try {
+                  me = await api("emprunts", "/emprunts/utilisateur/" + uid);
+                } catch (e) {}
+                const ec = me.filter((e) => e.valide && !e.date_retour_reelle);
+                myEmps.value = await enrich(ec);
+                myS.dispo = b.filter((l) => l.disponible > 0).length;
+                myS.enCours = ec.length;
+                myS.retards = ec.filter((e) => isLate(e)).length;
+              }
+            } catch (e) {}
+          }
 
-async function doChangerMdp(){if(!mdpF.ancien||!mdpF.nouveau||!mdpF.confirm){mdpErr.value='Tous les champs sont obligatoires';return}if(mdpF.nouveau!==mdpF.confirm){mdpErr.value='Les mots de passe ne correspondent pas';return}if(mdpF.nouveau.length<6){mdpErr.value='Le nouveau mot de passe doit contenir au moins 6 caractères';return}mdpLoad.value=true;mdpErr.value='';try{const updated=await api('utilisateurs','/auth/changer-mot-de-passe','POST',{ancien_mot_de_passe:mdpF.ancien,nouveau_mot_de_passe:mdpF.nouveau});user.value=updated;localStorage.setItem('bu',JSON.stringify(updated));modal.value=null;toast('Mot de passe mis à jour avec succès');ldDash()}catch(e){mdpErr.value=e.message}finally{mdpLoad.value=false}}
-function logout(){user.value=null;token.value=null;localStorage.removeItem('bt');localStorage.removeItem('bu')}
+          // CRUD LIVRES
+          function openLivreM(l) {
+            if (l)
+              Object.assign(mL, {
+                id: l.id,
+                titre: l.titre,
+                auteur: l.auteur,
+                isbn: l.isbn,
+                annee: l.annee,
+                genre: l.genre || "",
+                quantite: l.quantite || 1,
+              });
+            else
+              Object.assign(mL, {
+                id: null,
+                titre: "",
+                auteur: "",
+                isbn: "",
+                annee: null,
+                genre: "",
+                quantite: 1,
+              });
+            modal.value = "livre";
+          }
+          async function saveLivre() {
+            if (!mL.titre || !mL.auteur || !mL.isbn)
+              return toast("Titre, auteur et ISBN sont requis", "error");
+            try {
+              const body = {
+                titre: mL.titre,
+                auteur: mL.auteur,
+                isbn: mL.isbn,
+                annee: mL.annee || null,
+                genre: mL.genre || null,
+                quantite: mL.quantite || 1,
+              };
+              if (mL.id) {
+                await api("livres", "/livres/" + mL.id, "PUT", body);
+                toast("Livre modifié");
+              } else {
+                await api("livres", "/livres", "POST", body);
+                toast("Livre ajouté au catalogue");
+              }
+              modal.value = null;
+              ldLiv();
+            } catch (e) {
+              toast(e.message, "error");
+            }
+          }
+          async function delLivre(id) {
+            if (!confirm("Supprimer ce livre ?")) return;
+            try {
+              await api("livres", "/livres/" + id, "DELETE");
+              toast("Livre supprimé");
+              ldLiv();
+            } catch (e) {
+              toast(e.message, "error");
+            }
+          }
 
-// DATA LOADING
-async function ldLiv(){lLoad.value=true;try{livres.value=await api('livres','/livres')}catch(e){toast(e.message,'error')}finally{lLoad.value=false}}
-async function ldUsr(){uLoad.value=true;try{usrs.value=await api('utilisateurs','/utilisateurs')}catch(e){toast(e.message,'error')}finally{uLoad.value=false}}
-async function ldEmp(){eLoad.value=true;try{emps.value=await enrich(await api('emprunts','/emprunts'))}catch(e){toast(e.message,'error')}finally{eLoad.value=false}}
-async function ldRet(){try{const r=await api('emprunts','/emprunts/retards');rets.value=await enrich(r)}catch(e){toast(e.message,'error')}}
+          // CRUD USERS (admin)
+          function openUserM() {
+            Object.assign(mU, {
+              nom: "",
+              prenom: "",
+              email: "",
+              mdp: "",
+              telephone: "",
+              type: "etudiant",
+              matricule: "",
+              piece_type: "CNI",
+              piece_num: "",
+            });
+            modal.value = "user";
+          }
+          async function saveUser() {
+            if (!mU.nom || !mU.prenom || !mU.telephone || !mU.email || !mU.mdp)
+              return toast("Remplissez tous les champs obligatoires", "error");
+            try {
+              const b = {
+                nom: mU.nom,
+                prenom: mU.prenom,
+                email: mU.email,
+                mot_de_passe: mU.mdp,
+                telephone: mU.telephone || null,
+                type: mU.type,
+                role: "membre",
+              };
+              if (mU.type === "etudiant") {
+                if (!mU.matricule) return toast("Matricule requis", "error");
+                b.matricule = mU.matricule;
+              } else if (mU.type === "professeur") {
+                b.piece_identite_type = mU.piece_type;
+                b.piece_identite_numero = mU.piece_num;
+              } else {
+                b.role = "admin";
+              }
+              await api("utilisateurs", "/utilisateurs", "POST", b);
+              toast("Accès créé avec mot de passe temporaire");
+              modal.value = null;
+              ldUsr();
+            } catch (e) {
+              toast(e.message, "error");
+            }
+          }
+          async function delUser(id) {
+            // Vérifier si le membre a des emprunts en cours avant toute action
+            let empruntsEnCours = [];
+            try {
+              empruntsEnCours = (
+                await api("emprunts", "/emprunts/utilisateur/" + id)
+              ).filter((e) => !e.date_retour_reelle);
+            } catch (e) {}
+            if (empruntsEnCours.length > 0) {
+              toast(
+                "Impossible : ce membre a " +
+                  empruntsEnCours.length +
+                  " emprunt(s) en cours. Enregistrez le(s) retour(s) avant de désactiver ce compte.",
+                "error",
+              );
+              return;
+            }
+            if (
+              !confirm(
+                "Désactiver ce compte membre ?\nSes informations et son historique d'emprunts seront conservés.",
+              )
+            )
+              return;
+            try {
+              await api(
+                "utilisateurs",
+                "/utilisateurs/" + id + "/desactiver",
+                "PUT",
+              );
+              toast("Compte désactivé — historique conservé");
+              ldUsr();
+            } catch (e) {
+              toast(e.message, "error");
+            }
+          }
 
-async function ldDash(){
-  try{
-    const b=await api('livres','/livres').catch(()=>[]);livres.value=b;
-    if(isAdmin.value){
-      const u=await api('utilisateurs','/utilisateurs').catch(()=>[]);usrs.value=u;
-      const c=await api('emprunts','/emprunts/en-cours').catch(()=>[]);
-      const r=await api('emprunts','/emprunts/retards').catch(()=>[]);
-      const a=await api('emprunts','/emprunts/en-attente').catch(()=>[]);
-      const cfg=await api('emprunts','/config/auto-validation').catch(()=>({auto_validation:true}));
-      rets.value=await enrich(r);
-      autoValid.value=cfg.auto_validation;
-      ds.livres=b.length;ds.membres=u.length;ds.enCours=c.length;ds.retards=r.length;ds.enAttente=a.length;
-    }else{
-      const uid=user.value.id;
-      let me=[];try{me=await api('emprunts','/emprunts/utilisateur/'+uid)}catch(e){}
-      const ec=me.filter(e=>e.valide&&!e.date_retour_reelle);
-      myEmps.value=await enrich(ec);
-      myS.dispo=b.filter(l=>l.disponible>0).length;
-      myS.enCours=ec.length;
-      myS.retards=ec.filter(e=>isLate(e)).length;
-    }
-  }catch(e){}
-}
+          const mUE = reactive({
+            id: null,
+            nom: "",
+            prenom: "",
+            email: "",
+            telephone: "",
+            type: "etudiant",
+          });
+          function openEditUser(u) {
+            Object.assign(mUE, {
+              id: u.id,
+              nom: u.nom,
+              prenom: u.prenom,
+              email: u.email,
+              telephone: u.telephone || "",
+              type: u.type,
+            });
+            modal.value = "edituser";
+          }
+          async function saveEditUser() {
+            if (!mUE.nom || !mUE.prenom || !mU.telephone || !mUE.email)
+              return toast("Nom, prénom, email et telephone requis", "error");
+            try {
+              await api("utilisateurs", "/utilisateurs/" + mUE.id, "PUT", {
+                nom: mUE.nom,
+                prenom: mUE.prenom,
+                email: mUE.email,
+                telephone: mUE.telephone || null,
+                type: mUE.type,
+              });
+              toast("Utilisateur modifié");
+              modal.value = null;
+              ldUsr();
+            } catch (e) {
+              toast(e.message, "error");
+            }
+          }
 
-// CRUD LIVRES
-function openLivreM(l){if(l)Object.assign(mL,{id:l.id,titre:l.titre,auteur:l.auteur,isbn:l.isbn,annee:l.annee,genre:l.genre||'',quantite:l.quantite||1});else Object.assign(mL,{id:null,titre:'',auteur:'',isbn:'',annee:null,genre:'',quantite:1});modal.value='livre'}
-async function saveLivre(){if(!mL.titre||!mL.auteur||!mL.isbn)return toast('Titre, auteur et ISBN sont requis','error');try{const body={titre:mL.titre,auteur:mL.auteur,isbn:mL.isbn,annee:mL.annee||null,genre:mL.genre||null,quantite:mL.quantite||1};if(mL.id){await api('livres','/livres/'+mL.id,'PUT',body);toast('Livre modifié')}else{await api('livres','/livres','POST',body);toast('Livre ajouté au catalogue')}modal.value=null;ldLiv()}catch(e){toast(e.message,'error')}}
-async function delLivre(id){if(!confirm('Supprimer ce livre ?'))return;try{await api('livres','/livres/'+id,'DELETE');toast('Livre supprimé');ldLiv()}catch(e){toast(e.message,'error')}}
+          // EMPRUNTS
+          function openEmpM() {
+            const uid = isAdmin.value ? null : user.value.id;
+            Object.assign(mE, { uid, lid: null });
+            ldLiv();
+            if (isAdmin.value) ldUsr();
+            modal.value = "emprunt";
+          }
+          async function saveEmp() {
+            const uid = mE.uid || (user.value ? user.value.id : null);
+            if (!uid || !mE.lid) return toast("Sélectionnez un livre", "error");
+            try {
+              const ret = new Date();
+              ret.setDate(ret.getDate() + 15);
+              const d = ret.toISOString().split("T")[0];
+              await api("emprunts", "/emprunts", "POST", {
+                utilisateur_id: uid,
+                livre_id: mE.lid,
+                date_retour_prevue: d,
+              });
+              modal.value = null;
+              toast(
+                autoValid.value
+                  ? "Emprunt validé — retour prévu dans 15 jours"
+                  : "Demande envoyée — en attente de validation par l'admin",
+              );
+              ldLiv();
+              if (pg.value === "emprunts") ldEmp();
+              else ldDash();
+            } catch (e) {
+              toast(e.message, "error");
+            }
+          }
+          async function toggleAutoValid() {
+            const newVal = !autoValid.value;
+            try {
+              await api("emprunts", "/config/auto-validation", "PUT", {
+                auto_validation: newVal,
+              });
+              autoValid.value = newVal;
+              toast(
+                newVal
+                  ? "Validation automatique activée"
+                  : "Validation manuelle activée — les emprunts devront être validés un par un",
+              );
+            } catch (e) {
+              toast(e.message, "error");
+            }
+          }
+          async function validerEmprunt(id) {
+            if (
+              !confirm(
+                "Valider cet emprunt ? Le livre sera marqué comme emprunté.",
+              )
+            )
+              return;
+            try {
+              await api("emprunts", "/emprunts/" + id + "/valider", "PUT");
+              toast("Emprunt validé — le membre peut récupérer le livre");
+              ldEmp();
+              ldDash();
+            } catch (e) {
+              toast(e.message, "error");
+            }
+          }
+          async function retourner(id) {
+            if (!confirm("Confirmer le retour de ce livre ?")) return;
+            try {
+              await api("emprunts", "/emprunts/" + id + "/retour", "PUT");
+              toast("Retour enregistré");
+              ldLiv();
+              if (pg.value === "retards") ldRet();
+              else if (pg.value === "emprunts") ldEmp();
+              else ldDash();
+            } catch (e) {
+              toast(e.message, "error");
+            }
+          }
 
-// CRUD USERS (admin)
-function openUserM(){Object.assign(mU,{nom:'',prenom:'',email:'',mdp:'',telephone:'',type:'etudiant',matricule:'',piece_type:'CNI',piece_num:''});modal.value='user'}
-async function saveUser(){
-  if(!mU.nom||!mU.prenom||!mU.telephone||!mU.email||!mU.mdp)return toast('Remplissez tous les champs obligatoires','error');
-  try{
-    const b={nom:mU.nom,prenom:mU.prenom,email:mU.email,mot_de_passe:mU.mdp,telephone:mU.telephone||null,type:mU.type,role:'membre'};
-    if(mU.type==='etudiant'){if(!mU.matricule)return toast('Matricule requis','error');b.matricule=mU.matricule}
-    else if(mU.type==='professeur'){b.piece_identite_type=mU.piece_type;b.piece_identite_numero=mU.piece_num}
-    else{b.role='admin'}
-    await api('utilisateurs','/utilisateurs','POST',b);
-    toast('Accès créé avec mot de passe temporaire');modal.value=null;ldUsr();
-  }catch(e){toast(e.message,'error')}
-}
-async function delUser(id){
-  // Vérifier si le membre a des emprunts en cours avant toute action
-  let empruntsEnCours=[];
-  try{empruntsEnCours=(await api('emprunts','/emprunts/utilisateur/'+id)).filter(e=>!e.date_retour_reelle)}catch(e){}
-  if(empruntsEnCours.length>0){
-    toast('Impossible : ce membre a '+empruntsEnCours.length+' emprunt(s) en cours. Enregistrez le(s) retour(s) avant de désactiver ce compte.','error');
-    return;
-  }
-  if(!confirm('Désactiver ce compte membre ?\nSes informations et son historique d\'emprunts seront conservés.'))return;
-  try{
-    await api('utilisateurs','/utilisateurs/'+id+'/desactiver','PUT');
-    toast('Compte désactivé — historique conservé');
-    ldUsr();
-  }catch(e){toast(e.message,'error')}
-}
+          onMounted(() => {
+            const t = localStorage.getItem("bt"),
+              u = localStorage.getItem("bu");
+            if (t && u) {
+              try {
+                token.value = t;
+                user.value = JSON.parse(u);
+                ldDash();
+              } catch (e) {}
+            }
+          });
 
-const mUE=reactive({id:null,nom:'',prenom:'',email:'',telephone:'',type:'etudiant'});
-function openEditUser(u){Object.assign(mUE,{id:u.id,nom:u.nom,prenom:u.prenom,email:u.email,telephone:u.telephone||'',type:u.type});modal.value='edituser'}
-async function saveEditUser(){if(!mUE.nom||!mUE.prenom||!mU.telephone||!mUE.email)return toast('Nom, prénom, email et telephone requis','error');try{await api('utilisateurs','/utilisateurs/'+mUE.id,'PUT',{nom:mUE.nom,prenom:mUE.prenom,email:mUE.email,telephone:mUE.telephone||null,type:mUE.type});toast('Utilisateur modifié');modal.value=null;ldUsr()}catch(e){toast(e.message,'error')}}
-
-// EMPRUNTS
-function openEmpM(){const uid=isAdmin.value?null:user.value.id;Object.assign(mE,{uid,lid:null});ldLiv();if(isAdmin.value)ldUsr();modal.value='emprunt'}
-async function saveEmp(){
-  const uid=mE.uid||(user.value?user.value.id:null);
-  if(!uid||!mE.lid)return toast('Sélectionnez un livre','error');
-  try{
-    const ret=new Date();ret.setDate(ret.getDate()+15);
-    const d=ret.toISOString().split('T')[0];
-    await api('emprunts','/emprunts','POST',{utilisateur_id:uid,livre_id:mE.lid,date_retour_prevue:d});
-    modal.value=null;toast(autoValid.value?'Emprunt validé — retour prévu dans 15 jours':'Demande envoyée — en attente de validation par l\'admin');
-    ldLiv();if(pg.value==='emprunts')ldEmp();else ldDash();
-  }catch(e){toast(e.message,'error')}
-}
-async function toggleAutoValid(){
-  const newVal=!autoValid.value;
-  try{
-    await api('emprunts','/config/auto-validation','PUT',{auto_validation:newVal});
-    autoValid.value=newVal;
-    toast(newVal?'Validation automatique activée':'Validation manuelle activée — les emprunts devront être validés un par un');
-  }catch(e){toast(e.message,'error')}
-}
-async function validerEmprunt(id){
-  if(!confirm('Valider cet emprunt ? Le livre sera marqué comme emprunté.'))return;
-  try{
-    await api('emprunts','/emprunts/'+id+'/valider','PUT');
-    toast('Emprunt validé — le membre peut récupérer le livre');
-    ldEmp();ldDash();
-  }catch(e){toast(e.message,'error')}
-}
-async function retourner(id){if(!confirm('Confirmer le retour de ce livre ?'))return;try{await api('emprunts','/emprunts/'+id+'/retour','PUT');toast('Retour enregistré');ldLiv();if(pg.value==='retards')ldRet();else if(pg.value==='emprunts')ldEmp();else ldDash()}catch(e){toast(e.message,'error')}}
-
-onMounted(()=>{const t=localStorage.getItem('bt'),u=localStorage.getItem('bu');if(t&&u){try{token.value=t;user.value=JSON.parse(u);ldDash()}catch(e){}}});
-
-return{LOGO,user,token,pg,modal,toasts,authMode,authErr,authLoad,showForgot,loginF,regF,livres,usrs,emps,empList,empListEnCours,empListAttente,empTabList,empTab,rets,retC,lLoad,uLoad,eLoad,lQ,autoValid,ds,mL,mU,mUE,mE,myEmps,myS,isAdmin,uInit,roleLabel,fDate,fLiv,livDispo,toast,tLabel,isLate,lateDays,go,doLogin,doRegister,logout,ldLiv,ldUsr,ldEmp,ldRet,ldDash,openLivreM,saveLivre,delLivre,openUserM,saveUser,delUser,openEditUser,saveEditUser,openEmpM,saveEmp,retourner,validerEmprunt,toggleAutoValid,mdpF,mdpErr,mdpLoad,doChangerMdp}
-}}).mount('#app');
-</script>
-</body>
+          return {
+            LOGO,
+            user,
+            token,
+            pg,
+            modal,
+            toasts,
+            authMode,
+            authErr,
+            authLoad,
+            showForgot,
+            loginF,
+            regF,
+            livres,
+            usrs,
+            emps,
+            empList,
+            empListEnCours,
+            empListAttente,
+            empTabList,
+            empTab,
+            rets,
+            retC,
+            lLoad,
+            uLoad,
+            eLoad,
+            lQ,
+            autoValid,
+            ds,
+            mL,
+            mU,
+            mUE,
+            mE,
+            myEmps,
+            myS,
+            isAdmin,
+            uInit,
+            roleLabel,
+            fDate,
+            fLiv,
+            livDispo,
+            toast,
+            tLabel,
+            isLate,
+            lateDays,
+            go,
+            doLogin,
+            doRegister,
+            logout,
+            ldLiv,
+            ldUsr,
+            ldEmp,
+            ldRet,
+            ldDash,
+            openLivreM,
+            saveLivre,
+            delLivre,
+            openUserM,
+            saveUser,
+            delUser,
+            openEditUser,
+            saveEditUser,
+            openEmpM,
+            saveEmp,
+            retourner,
+            validerEmprunt,
+            toggleAutoValid,
+            mdpF,
+            mdpErr,
+            mdpLoad,
+            doChangerMdp,
+          };
+        },
+      }).mount("#app");
+    </script>
+  </body>
 </html>
