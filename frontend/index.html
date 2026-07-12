@@ -4,30 +4,41 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Bibliothèque Numérique — DIT</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 <style>
-:root{--dit:#014955;--dit-l:#026d7e;--dit-xl:#03899e;--dit-bg:#e8f4f6;--navy:#0f172a;--navy-l:#1e293b;--white:#fff;--light:#f7fafa;--muted:#7c9a9e;--border:#d5e3e5;--danger:#dc2626;--danger-bg:#fef2f2;--success:#059669;--success-bg:#ecfdf5;--amber:#d97706;--amber-bg:#fffbeb;--radius:12px;--shadow:0 1px 3px rgba(1,73,85,.08);--shadow-lg:0 12px 32px rgba(1,73,85,.12);--font:'Plus Jakarta Sans',sans-serif}
+:root{--dit:#014955;--dit-l:#026d7e;--dit-xl:#03899e;--dit-bg:#e8f4f6;--navy:#0f172a;--navy-l:#1e293b;--white:#fff;--light:#f7fafa;--muted:#5f7d81;--nav-text:#5a7a7e;--border:#d5e3e5;--danger:#dc2626;--danger-bg:#fef2f2;--success:#059669;--success-bg:#ecfdf5;--amber:#d97706;--amber-bg:#fffbeb;--radius:12px;--shadow:0 1px 3px rgba(1,73,85,.08);--shadow-lg:0 12px 32px rgba(1,73,85,.12);--font:'Plus Jakarta Sans',sans-serif;--font-serif:'Fraunces','Plus Jakarta Sans',serif;color-scheme:light}
+[data-theme="dark"]{--dit-bg:rgba(3,137,158,.16);--navy:#e8eef0;--navy-l:#c6d5d8;--white:#141c20;--light:#0a1013;--muted:#8ea6aa;--nav-text:#8ea6aa;--border:#26363b;--danger-bg:rgba(220,38,38,.18);--success-bg:rgba(5,150,105,.2);--amber-bg:rgba(217,119,6,.2);--shadow:0 1px 3px rgba(0,0,0,.4);--shadow-lg:0 14px 36px rgba(0,0,0,.55);color-scheme:dark}
+[data-theme="dark"] .sidebar nav .nav-link.active,[data-theme="dark"] .mono,[data-theme="dark"] .info-box h4,[data-theme="dark"] .info-box a,[data-theme="dark"] .stat-icon.ic-dit{color:#4dd0e3}
+[data-theme="dark"] .stat-icon.ic-green{color:#3ddc9a}[data-theme="dark"] .stat-icon.ic-amber{color:#f4b942}[data-theme="dark"] .stat-icon.ic-red{color:#f87171}
+[data-theme="dark"] .badge-green,[data-theme="dark"] .badge-red,[data-theme="dark"] .badge-amber,[data-theme="dark"] .badge-dit,[data-theme="dark"] .badge-navy{color:var(--navy)}
+[data-theme="dark"] .badge-navy{background:rgba(255,255,255,.08)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font);font-size:14px;background:var(--light);color:var(--navy);min-height:100vh;overflow-x:hidden}
+body{font-family:var(--font);font-size:14px;background:var(--light);color:var(--navy);min-height:100vh;overflow-x:hidden;transition:background-color .25s ease,color .25s ease}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--dit-l);outline-offset:2px;border-radius:6px}
 @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@keyframes gradientMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 .fade-up{animation:fadeUp .5s ease both}.d1{animation-delay:.05s}.d2{animation-delay:.1s}.d3{animation-delay:.15s}.d4{animation-delay:.2s}.d5{animation-delay:.25s}
 
 .auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,var(--dit) 0%,#02313a 40%,#011e23 100%);position:relative;overflow:hidden;padding:40px 24px}
 .auth-page::before{content:'';position:absolute;top:-30%;right:-20%;width:600px;height:600px;background:radial-gradient(circle,rgba(3,137,158,.15) 0%,transparent 70%);pointer-events:none;animation:float 6s ease-in-out infinite}
+.auth-page::after{content:'';position:absolute;left:0;right:0;bottom:0;height:110px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='90' viewBox='0 0 160 90'%3E%3Crect x='4' y='30' width='14' height='60' fill='white' opacity='.10'/%3E%3Crect x='22' y='15' width='10' height='75' fill='white' opacity='.07'/%3E%3Crect x='36' y='40' width='16' height='50' fill='white' opacity='.12'/%3E%3Crect x='56' y='20' width='12' height='70' fill='white' opacity='.08'/%3E%3Crect x='72' y='35' width='9' height='55' fill='white' opacity='.09'/%3E%3Crect x='85' y='10' width='15' height='80' fill='white' opacity='.11'/%3E%3Crect x='104' y='28' width='11' height='62' fill='white' opacity='.07'/%3E%3Crect x='119' y='45' width='13' height='45' fill='white' opacity='.10'/%3E%3Crect x='136' y='18' width='10' height='72' fill='white' opacity='.08'/%3E%3C/svg%3E") repeat-x bottom;background-size:160px 110px;pointer-events:none}
 .auth-container{position:relative;z-index:1;width:100%;max-width:880px;display:flex;align-items:flex-start;gap:40px}
 .auth-brand{flex:0 0 260px;text-align:left;animation:fadeUp .8s ease both}
 .auth-brand img{width:100%;max-width:260px;margin-bottom:20px;border-radius:14px}
-.auth-brand h1{font-size:24px;font-weight:800;color:var(--white);line-height:1.25;margin-bottom:10px}
+.auth-brand h1{font-family:var(--font-serif);font-size:28px;font-weight:600;letter-spacing:-.01em;color:#fff;line-height:1.2;margin-bottom:10px}
 .auth-brand h1 span{color:#03899e}
-.auth-card{flex:1;min-width:0;background:var(--white);border-radius:16px;padding:36px 32px;box-shadow:var(--shadow-lg);animation:fadeUp .6s ease both;animation-delay:.15s}
+.auth-card{flex:1;min-width:0;background:var(--white);border-radius:16px;padding:36px 32px;box-shadow:var(--shadow-lg);animation:fadeUp .6s ease both;animation-delay:.15s;transition:background-color .25s ease}
 .auth-card h2{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:4px}
 .auth-card .auth-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
-@media(max-width:760px){.auth-container{flex-direction:column;max-width:480px;gap:24px}.auth-brand{flex:none;text-align:center}.auth-brand img{max-width:180px}.auth-brand h1{font-size:20px}}
+.auth-features{list-style:none;margin-top:22px;display:flex;flex-direction:column;gap:12px}
+.auth-features li{display:flex;align-items:center;gap:10px;font-size:12.5px;color:rgba(255,255,255,.75);line-height:1.4}
+.auth-features .af-ic{width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#7fd8e6}
+.theme-fab{position:fixed;top:18px;right:18px;z-index:10;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(6px);transition:background .2s}
+.theme-fab:hover{background:rgba(255,255,255,.2)}
+@media(max-width:760px){.auth-container{flex-direction:column;max-width:480px;gap:24px}.auth-brand{flex:none;text-align:center}.auth-brand img{max-width:180px}.auth-brand h1{font-size:22px}.auth-features{align-items:center}.auth-features li{justify-content:center}}
 .auth-tabs{display:flex;gap:4px;background:var(--light);border-radius:10px;padding:3px;margin-bottom:20px}
 .auth-tab{flex:1;padding:10px;text-align:center;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .25s;color:var(--muted);background:transparent;border:none;font-family:var(--font)}
 .auth-tab.active{background:var(--white);color:var(--dit);box-shadow:var(--shadow)}
@@ -40,50 +51,62 @@ body{font-family:var(--font);font-size:14px;background:var(--light);color:var(--
 .btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border);width:auto}.btn-ghost:hover{background:var(--light);color:var(--navy)}
 .btn-danger{background:var(--danger);color:white;width:auto}.btn-success{background:var(--success);color:white;width:auto}
 .btn-sm{padding:8px 18px;font-size:12px}.btn-ghost.active{background:var(--dit);color:white;border-color:var(--dit)}
-.alert{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px}.alert-danger{background:var(--danger-bg);color:var(--danger)}
+.alert{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px}.alert-danger{background:var(--danger-bg);color:var(--danger)}.alert-info{background:var(--dit-bg);color:var(--dit)}
+[data-theme="dark"] .alert-info{color:#4dd0e3}
 .divider{display:flex;align-items:center;gap:12px;margin:18px 0;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
 
 .app-layout{display:flex;min-height:100vh}
-.sidebar{width:260px;min-height:100vh;background:var(--white);border-right:1.5px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform .3s ease}
+.sidebar{width:260px;min-height:100vh;background:var(--white);border-right:1.5px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform .3s ease,background-color .25s ease,border-color .25s ease}
 .brand{padding:22px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
 .brand img{width:46px;border-radius:10px}.brand-text h1{font-size:14px;font-weight:700;color:var(--navy);line-height:1.2}.brand-text span{font-size:9px;font-weight:700;color:var(--dit);text-transform:uppercase;letter-spacing:1.5px}
 .sidebar nav{padding:14px 12px;flex:1}
 .nav-section{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;padding:14px 12px 6px;margin-top:4px}
-.sidebar nav a{display:flex;align-items:center;gap:12px;padding:10px 12px;color:#5a7a7e;text-decoration:none;font-size:13px;font-weight:500;border-radius:8px;transition:all .2s;cursor:pointer}
-.sidebar nav a:hover{color:var(--navy);background:var(--dit-bg)}.sidebar nav a.active{color:var(--dit);background:var(--dit-bg);font-weight:600}
-.sidebar nav a .nav-icon{width:18px;height:18px;flex-shrink:0}
-.sidebar nav a .nav-badge{margin-left:auto;background:var(--danger);color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px}
-.sidebar-footer{padding:16px 20px;border-top:1px solid var(--border)}
+.sidebar nav .nav-link{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;color:var(--nav-text);text-decoration:none;font-size:13px;font-weight:500;font-family:var(--font);border-radius:8px;border:none;background:transparent;transition:all .2s;cursor:pointer;text-align:left}
+.sidebar nav .nav-link:hover{color:var(--navy);background:var(--dit-bg)}.sidebar nav .nav-link.active{color:var(--dit);background:var(--dit-bg);font-weight:600}
+.sidebar nav .nav-link .nav-icon{width:18px;height:18px;flex-shrink:0}
+.sidebar nav .nav-link .nav-badge{margin-left:auto;background:var(--danger);color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px}
+.sidebar-footer{padding:16px 20px;border-top:1px solid var(--border);transition:border-color .25s ease}
+.theme-switch-row{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;padding:0 0 14px;margin-bottom:14px;border-bottom:1px solid var(--border);cursor:pointer;font-family:var(--font);font-size:12px;font-weight:600;color:var(--navy-l)}
 .user-info{display:flex;align-items:center;gap:10px}.user-avatar{width:36px;height:36px;border-radius:50%;background:var(--dit);color:white;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
 .user-name{font-size:13px;font-weight:600;color:var(--navy)}.user-role-label{font-size:11px;color:var(--muted)}
 .logout-btn{margin-top:10px;font-size:12px;color:var(--danger);cursor:pointer;background:none;border:none;font-family:var(--font);font-weight:500}.logout-btn:hover{text-decoration:underline}
 .main-content{margin-left:260px;flex:1;padding:28px 32px 60px;max-width:calc(100vw - 260px);min-height:100vh}
 .hamburger{display:none;position:fixed;top:14px;left:14px;z-index:200;background:var(--dit);border:none;border-radius:10px;padding:10px 12px;cursor:pointer;box-shadow:var(--shadow-lg)}.hamburger svg{display:block}
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}
-.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}.page-header h2{font-size:22px;font-weight:700;color:var(--navy)}.page-header p{font-size:13px;color:var(--muted);margin-top:2px}
-.hero{background:linear-gradient(135deg,var(--dit) 0%,var(--dit-l) 50%,var(--dit-xl) 100%);background-size:200% 200%;animation:gradientMove 8s ease infinite;border-radius:16px;padding:36px 32px;color:white;margin-bottom:24px;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;top:-60%;right:-15%;width:400px;height:400px;background:radial-gradient(circle,rgba(255,255,255,.08) 0%,transparent 70%);pointer-events:none}
-.hero h2{font-size:24px;font-weight:700;margin-bottom:6px;position:relative}.hero p{font-size:14px;opacity:.8;max-width:500px;line-height:1.6;position:relative}.hero .hero-date{margin-top:12px;font-size:11px;opacity:.5;text-transform:uppercase;letter-spacing:1px;position:relative}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}.page-header h2{font-family:var(--font-serif);font-size:24px;font-weight:600;letter-spacing:-.01em;color:var(--navy)}.page-header p{font-size:13px;color:var(--muted);margin-top:2px}
+.hero{background:linear-gradient(135deg,var(--dit) 0%,var(--dit-l) 50%,var(--dit-xl) 100%);border-radius:16px;padding:36px 32px;color:white;margin-bottom:24px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-60%;right:-15%;width:400px;height:400px;background:radial-gradient(circle,rgba(255,255,255,.08) 0%,transparent 70%);pointer-events:none;z-index:0}
+.hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:60px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='90' viewBox='0 0 160 90'%3E%3Crect x='4' y='30' width='14' height='60' fill='white' opacity='.10'/%3E%3Crect x='22' y='15' width='10' height='75' fill='white' opacity='.07'/%3E%3Crect x='36' y='40' width='16' height='50' fill='white' opacity='.12'/%3E%3Crect x='56' y='20' width='12' height='70' fill='white' opacity='.08'/%3E%3Crect x='72' y='35' width='9' height='55' fill='white' opacity='.09'/%3E%3Crect x='85' y='10' width='15' height='80' fill='white' opacity='.11'/%3E%3Crect x='104' y='28' width='11' height='62' fill='white' opacity='.07'/%3E%3Crect x='119' y='45' width='13' height='45' fill='white' opacity='.10'/%3E%3Crect x='136' y='18' width='10' height='72' fill='white' opacity='.08'/%3E%3C/svg%3E") repeat-x bottom;background-size:160px 90px;pointer-events:none;z-index:0}
+.hero h2{font-family:var(--font-serif);font-size:28px;font-weight:600;letter-spacing:-.01em;margin-bottom:6px;position:relative;z-index:1}.hero p{font-size:14px;opacity:.8;max-width:500px;line-height:1.6;position:relative;z-index:1}.hero .hero-date{margin-top:12px;font-size:11px;opacity:.5;text-transform:uppercase;letter-spacing:1px;position:relative;z-index:1}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:24px}
 .stat-card{background:var(--white);border-radius:var(--radius);padding:20px;border:1.5px solid var(--border);transition:all .25s;animation:fadeUp .5s ease both;cursor:pointer}.stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);border-color:var(--dit-l)}
 .stat-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
 .stat-icon.ic-dit{background:var(--dit-bg);color:var(--dit)}.stat-icon.ic-green{background:var(--success-bg);color:var(--success)}.stat-icon.ic-amber{background:var(--amber-bg);color:var(--amber)}.stat-icon.ic-red{background:var(--danger-bg);color:var(--danger)}
 .stat-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}.stat-value{font-size:28px;font-weight:800;color:var(--navy);margin-top:2px}
-.card{background:var(--white);border-radius:var(--radius);border:1.5px solid var(--border);overflow:hidden;animation:fadeUp .5s ease both}
+.card{background:var(--white);border-radius:var(--radius);border:1.5px solid var(--border);overflow:hidden;animation:fadeUp .5s ease both;transition:background-color .25s ease,border-color .25s ease}
 .card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.card-header h3{font-size:14px;font-weight:700;color:var(--navy)}
 .search-bar{display:flex;align-items:center;gap:8px;background:var(--light);border:1.5px solid var(--border);border-radius:10px;padding:7px 12px;flex:1;max-width:300px}.search-bar:focus-within{border-color:var(--dit-l)}.search-bar input{border:none;background:transparent;outline:none;font-family:var(--font);font-size:13px;width:100%;color:var(--navy)}
-table{width:100%;border-collapse:collapse}thead tr{background:var(--light)}thead th{text-align:left;padding:10px 16px;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}tbody tr{border-top:1px solid var(--border);transition:background .15s}tbody tr:hover{background:var(--dit-bg)}tbody td{padding:12px 16px;font-size:13px;color:var(--navy)}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse}thead tr{background:var(--light)}thead th{text-align:left;padding:10px 16px;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);white-space:nowrap}tbody tr{border-top:1px solid var(--border);transition:background .15s}tbody tr:hover{background:var(--dit-bg)}tbody td{padding:12px 16px;font-size:13px;color:var(--navy);white-space:nowrap}
+@media(max-width:900px){.table-wrap table{min-width:640px}}
+.btn svg{width:13px;height:13px;flex-shrink:0}
 .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
 .badge-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
 .badge-green{background:var(--success-bg);color:var(--success)}.badge-green .badge-dot{background:var(--success)}.badge-red{background:var(--danger-bg);color:var(--danger)}.badge-red .badge-dot{background:var(--danger)}.badge-amber{background:var(--amber-bg);color:var(--amber)}.badge-amber .badge-dot{background:var(--amber)}.badge-dit{background:var(--dit-bg);color:var(--dit)}.badge-dit .badge-dot{background:var(--dit)}.badge-navy{background:#f1f5f5;color:var(--navy-l)}
 .actions{display:flex;gap:4px;flex-wrap:wrap}
 .overlay{position:fixed;inset:0;background:rgba(1,73,85,.45);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:center;justify-content:center;animation:fadeIn .15s ease both}
-.modal{background:var(--white);border-radius:16px;padding:28px;width:520px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:fadeUp .3s ease both}
+.modal{background:var(--white);border-radius:16px;padding:28px;width:520px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:fadeUp .3s ease both;transition:background-color .25s ease}
 .modal h3{font-size:18px;font-weight:700;color:var(--navy);margin-bottom:20px}.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
 .toast-container{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px}
-.toast{padding:12px 20px;border-radius:10px;font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);animation:fadeUp .3s ease both;max-width:320px;color:white}.toast.success{background:var(--success)}.toast.error{background:var(--danger)}
+.toast{display:flex;align-items:center;gap:10px;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);animation:fadeUp .3s ease both;max-width:320px;color:white}.toast.success{background:var(--success)}.toast.error{background:var(--danger)}
+.toast-ic{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0}.toast-ic svg{width:12px;height:12px}
 .empty{text-align:center;padding:48px 20px;color:var(--muted)}.empty p{font-size:14px}
+.empty::before{content:'';display:block;width:44px;height:44px;margin:0 auto 12px;border-radius:50%;background:var(--dit-bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2303899e' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 12h-6l-2 3h-4l-2-3H2'/%3E%3Cpath d='M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z'/%3E%3C/svg%3E") no-repeat center;background-size:20px}
 .loader{text-align:center;padding:36px;color:var(--muted);font-size:13px}.loader::after{content:'';display:block;width:24px;height:24px;margin:10px auto 0;border:3px solid var(--border);border-top-color:var(--dit);border-radius:50%;animation:spin .6s linear infinite}
+.skeleton{padding:4px 20px}
+.skel-row{display:flex;gap:16px;align-items:center;padding:14px 0;border-top:1px solid var(--border)}.skel-row:first-child{border-top:none}
+.skel-bar{height:11px;border-radius:6px;background:linear-gradient(90deg,var(--border) 25%,var(--dit-bg) 50%,var(--border) 75%);background-size:400% 100%;animation:shimmer 1.4s ease infinite;display:block}
+@keyframes shimmer{0%{background-position:100% 0}100%{background-position:0 0}}
 .mono{font-family:monospace;font-size:12px;background:var(--dit-bg);padding:2px 6px;border-radius:4px;color:var(--dit)}
 .svc-card{background:var(--white);border-radius:var(--radius);border:1.5px solid var(--border);padding:20px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
 .svc-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--dit);transform:scaleX(0);transition:transform .3s}
@@ -92,7 +115,7 @@ table{width:100%;border-collapse:collapse}thead tr{background:var(--light)}thead
 .service-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:24px}
 .info-box{background:var(--dit-bg);border:1.5px solid var(--border);border-radius:var(--radius);padding:20px;margin-top:24px}.info-box h4{font-size:14px;font-weight:700;color:var(--dit);margin-bottom:8px}.info-box p{font-size:13px;color:var(--navy-l);line-height:1.6}.info-box a{color:var(--dit);font-weight:600}
 .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);margin-bottom:14px}.toggle-row .tgl-label{font-size:13px;font-weight:600;color:var(--navy)}.toggle-row .tgl-sub{font-size:11px;color:var(--muted)}
-.toggle{position:relative;width:44px;height:24px;background:var(--border);border-radius:12px;cursor:pointer;transition:background .3s;flex-shrink:0}.toggle.on{background:var(--success)}.toggle::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;background:white;border-radius:50%;transition:transform .3s;box-shadow:var(--shadow)}.toggle.on::after{transform:translateX(20px)}
+.toggle{position:relative;width:44px;height:24px;background:var(--border);border:none;padding:0;appearance:none;border-radius:12px;cursor:pointer;transition:background .3s;flex-shrink:0}.toggle.on{background:var(--success)}.toggle::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;background:white;border-radius:50%;transition:transform .3s;box-shadow:var(--shadow)}.toggle.on::after{transform:translateX(20px)}
 .action-bar{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
 
 @media(max-width:900px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.sidebar-overlay.open{display:block}.hamburger{display:block}.main-content{margin-left:0;max-width:100vw;padding:20px 16px 60px;padding-top:64px}.stats-grid{grid-template-columns:repeat(2,1fr)}.form-row{grid-template-columns:1fr}}
@@ -104,11 +127,20 @@ table{width:100%;border-collapse:collapse}thead tr{background:var(--light)}thead
 
 <!-- ═══ AUTH ═══ -->
 <div v-if="!user" class="auth-page">
+<button class="theme-fab" type="button" @click="toggleTheme" :aria-label="theme==='dark'?'Passer en mode clair':'Passer en mode sombre'">
+<svg v-if="theme==='dark'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+<svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
 <div class="auth-container">
 <div class="auth-brand">
 <img :src="LOGO" alt="DIT"/>
 <h1>Bienvenue à la <span>Bibliothèque Numérique</span> du DIT</h1>
 <p style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.7">Votre plateforme de ressources documentaires.</p>
+<ul class="auth-features">
+<li><span class="af-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg></span>Catalogue de livres consultable en ligne</li>
+<li><span class="af-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg></span>Emprunts de 15 jours, suivi en temps réel</li>
+<li><span class="af-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>Alertes automatiques sur les retards</li>
+</ul>
 </div>
 <div class="auth-card">
 <h2 v-if="authMode==='login'">Connexion</h2>
@@ -125,7 +157,7 @@ table{width:100%;border-collapse:collapse}thead tr{background:var(--light)}thead
 <div class="form-group"><label class="form-label">Email</label><input class="form-input" v-model="loginF.email" type="email" placeholder="josias@dit.sn"></div>
 <div class="form-group"><label class="form-label">Mot de passe</label><input class="form-input" v-model="loginF.mdp" type="password" placeholder="••••••••" @keyup.enter="doLogin"></div>
 <a href="#" @click.prevent="showForgot=!showForgot" style="display:block;text-align:right;font-size:12px;color:var(--dit-l);font-weight:500;margin-top:-6px;margin-bottom:14px;text-decoration:none">Mot de passe oublié ?</a>
-<div v-if="showForgot" class="alert" style="background:var(--dit-bg);color:var(--dit);font-size:12px;margin-bottom:14px">Pour réinitialiser votre mot de passe, veuillez contacter l'administrateur de la bibliothèque à <strong>admin@dit.sn</strong> avec votre email d'inscription.</div>
+<div v-if="showForgot" class="alert alert-info" style="font-size:12px;margin-bottom:14px">Pour réinitialiser votre mot de passe, veuillez contacter l'administrateur de la bibliothèque à <strong>admin@dit.sn</strong> avec votre email d'inscription.</div>
 <button class="btn btn-dit" @click="doLogin" :disabled="authLoad" style="margin-top:8px">{{ authLoad?'Connexion...':'Se connecter' }}</button>
 <div class="divider">ou</div>
 <p style="text-align:center;font-size:12px;color:var(--muted)">Pas de compte ? <a href="#" @click.prevent="authMode='register';authErr=''" style="color:var(--dit);font-weight:600;text-decoration:none">Inscrivez-vous</a></p>
@@ -159,14 +191,18 @@ table{width:100%;border-collapse:collapse}thead tr{background:var(--light)}thead
 <div class="brand"><img :src="LOGO" alt="DIT"/><div class="brand-text"><h1>Bibliothèque Numérique</h1><span>Plateforme DIT</span></div></div>
 <nav>
 <div class="nav-section">Navigation</div>
-<a :class="{active:pg==='dashboard'}" @click="go('dashboard')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Tableau de bord</a>
+<button type="button" class="nav-link" :class="{active:pg==='dashboard'}" @click="go('dashboard')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Tableau de bord</button>
 <div class="nav-section">Gestion</div>
-<a :class="{active:pg==='livres'}" @click="go('livres')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg>Livres</a>
-<a v-if="isAdmin" :class="{active:pg==='utilisateurs'}" @click="go('utilisateurs')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Utilisateurs</a>
-<a :class="{active:pg==='emprunts'}" @click="go('emprunts')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>Emprunts</a>
-<a v-if="isAdmin" :class="{active:pg==='retards'}" @click="go('retards')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Retards<span class="nav-badge" v-if="retC>0">{{ retC }}</span></a>
+<button type="button" class="nav-link" :class="{active:pg==='livres'}" @click="go('livres')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg>Livres</button>
+<button type="button" class="nav-link" v-if="isAdmin" :class="{active:pg==='utilisateurs'}" @click="go('utilisateurs')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Utilisateurs</button>
+<button type="button" class="nav-link" :class="{active:pg==='emprunts'}" @click="go('emprunts')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>Emprunts</button>
+<button type="button" class="nav-link" v-if="isAdmin" :class="{active:pg==='retards'}" @click="go('retards')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Retards<span class="nav-badge" v-if="retC>0">{{ retC }}</span></button>
 </nav>
 <div class="sidebar-footer">
+<button type="button" class="theme-switch-row" @click="toggleTheme" :aria-pressed="theme==='dark'">
+<span>Mode sombre</span>
+<span class="toggle" :class="{on:theme==='dark'}"></span>
+</button>
 <div class="user-info"><div class="user-avatar">{{ uInit }}</div><div><div class="user-name">{{ user.prenom }} {{ user.nom }}</div><div class="user-role-label">{{ roleLabel }}</div></div></div>
 <button class="logout-btn" @click="logout">Se déconnecter</button>
 </div>
@@ -181,9 +217,9 @@ table{width:100%;border-collapse:collapse}thead tr{background:var(--light)}thead
 <div class="stat-card fade-up d2" @click="go('utilisateurs')"><div class="stat-icon ic-green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="stat-label">Membres</div><div class="stat-value">{{ ds.membres }}</div></div>
 <div class="stat-card fade-up d3" @click="go('emprunts')"><div class="stat-icon ic-amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg></div><div class="stat-label">Emprunts en cours</div><div class="stat-value">{{ ds.enCours }}</div></div>
 <div class="stat-card fade-up d4" @click="go('retards')"><div class="stat-icon ic-red"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="stat-label">Retards</div><div class="stat-value">{{ ds.retards }}</div></div>
-<div class="stat-card fade-up d5" @click="go('emprunts');empTab='attente'" style="position:relative"><div class="stat-icon" style="background:#fff3e0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="stat-label">En attente</div><div class="stat-value" :style="ds.enAttente>0?'color:#f59e0b':''">{{ ds.enAttente }}</div><span v-if="ds.enAttente>0" style="position:absolute;top:10px;right:10px;background:#ef4444;color:white;border-radius:99px;font-size:10px;font-weight:700;padding:2px 7px">!</span></div>
+<div class="stat-card fade-up d5" @click="go('emprunts');empTab='attente'" style="position:relative"><div class="stat-icon" style="background:var(--amber-bg);color:var(--amber)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="stat-label">En attente</div><div class="stat-value" :style="ds.enAttente>0?'color:var(--amber)':''">{{ ds.enAttente }}</div><span v-if="ds.enAttente>0" style="position:absolute;top:10px;right:10px;background:var(--danger);color:white;border-radius:99px;font-size:10px;font-weight:700;padding:2px 7px">!</span></div>
 </div>
-<div class="toggle-row fade-up d3"><div><div class="tgl-label">Validation automatique des emprunts</div><div class="tgl-sub">{{ autoValid ? "Les emprunts sont validés sans intervention manuelle" : "Chaque emprunt doit être validé manuellement par l'admin" }}</div></div><div class="toggle" :class="{on:autoValid}" @click="toggleAutoValid()"></div></div>
+<div class="toggle-row fade-up d3"><div><div class="tgl-label">Validation automatique des emprunts</div><div class="tgl-sub">{{ autoValid ? "Les emprunts sont validés sans intervention manuelle" : "Chaque emprunt doit être validé manuellement par l'admin" }}</div></div><button type="button" class="toggle" :class="{on:autoValid}" @click="toggleAutoValid()" :aria-pressed="autoValid" aria-label="Validation automatique des emprunts"></button></div>
 <h3 style="font-size:16px;font-weight:700;margin-bottom:14px" class="fade-up d4">Accès rapide</h3>
 <div class="service-grid">
 <div class="svc-card fade-up d4" @click="go('livres')"><h4>Catalogue des livres</h4><p>Ajouter et gérer les livres</p><div class="svc-count">{{ ds.livres }}<small>livres</small></div></div>
@@ -202,8 +238,8 @@ table{width:100%;border-collapse:collapse}thead tr{background:var(--light)}thead
 </div>
 <div class="card fade-up d3" style="margin-bottom:24px"><div class="card-header"><h3>Mes emprunts en cours</h3></div>
 <div v-if="myEmps.length===0" class="empty"><p>Aucun emprunt en cours</p></div>
-<table v-else><thead><tr><th>Livre</th><th>Emprunté le</th><th>Retour prévu</th><th>Statut</th></tr></thead>
-<tbody><tr v-for="e in myEmps" :key="e.id"><td><strong>{{ e._l }}</strong></td><td>{{ e.date_emprunt }}</td><td>{{ e.date_retour_prevue }}</td><td><span v-if="isLate(e)" class="badge badge-red"><span class="badge-dot"></span>En retard (+{{ lateDays(e) }}j)</span><span v-else class="badge badge-green"><span class="badge-dot"></span>En cours</span></td></tr></tbody></table></div>
+<div v-else class="table-wrap"><table><thead><tr><th>Livre</th><th>Emprunté le</th><th>Retour prévu</th><th>Statut</th></tr></thead>
+<tbody><tr v-for="e in myEmps" :key="e.id"><td><strong>{{ e._l }}</strong></td><td>{{ e.date_emprunt }}</td><td>{{ e.date_retour_prevue }}</td><td><span v-if="isLate(e)" class="badge badge-red"><span class="badge-dot"></span>En retard (+{{ lateDays(e) }}j)</span><span v-else class="badge badge-green"><span class="badge-dot"></span>En cours</span></td></tr></tbody></table></div></div>
 <div class="info-box fade-up d4"><h4>Vous avez des documents à partager ?</h4><p>Si vous disposez de cours, mémoires ou ouvrages à mettre à disposition de la communauté DIT, contactez l'administrateur à <a href="mailto:admin@dit.sn">admin@dit.sn</a></p></div>
 </section>
 
@@ -212,10 +248,10 @@ table{width:100%;border-collapse:collapse}thead tr{background:var(--light)}thead
 <div class="page-header fade-up"><div><h2>Livres</h2><p>Catalogue de la bibliothèque</p></div></div>
 <div class="action-bar fade-up d1" v-if="isAdmin"><button class="btn btn-dit btn-sm" style="width:auto;padding:10px 24px" @click="openLivreM()">+ Ajouter un livre au catalogue</button></div>
 <div class="card fade-up d2"><div class="card-header"><h3>Catalogue</h3><div class="search-bar"><input v-model="lQ" placeholder="Rechercher un titre, auteur, ISBN..."></div></div>
-<div v-if="lLoad" class="loader">Chargement</div>
+<div v-if="lLoad" class="skeleton"><div class="skel-row" v-for="n in 6" :key="n"><span class="skel-bar" style="width:6%"></span><span class="skel-bar" style="width:26%"></span><span class="skel-bar" style="width:18%"></span><span class="skel-bar" style="width:14%"></span><span class="skel-bar" style="width:8%"></span><span class="skel-bar" style="width:12%"></span></div></div>
 <div v-else-if="fLiv.length===0" class="empty"><p>Aucun livre trouvé</p></div>
-<table v-else><thead><tr><th>#</th><th>Titre</th><th>Auteur</th><th>ISBN</th><th>Année</th><th>Qté</th><th>Disponibles</th><th v-if="isAdmin">Actions</th></tr></thead>
-<tbody><tr v-for="l in fLiv" :key="l.id"><td>{{ l.id }}</td><td><strong>{{ l.titre }}</strong></td><td>{{ l.auteur }}</td><td><span class="mono">{{ l.isbn }}</span></td><td>{{ l.annee||'—' }}</td><td>{{ l.quantite }}</td><td><span class="badge" :class="l.disponible>0?'badge-green':'badge-red'"><span class="badge-dot"></span>{{ l.disponible }}/{{ l.quantite }}</span></td><td v-if="isAdmin" class="actions"><button class="btn btn-ghost btn-sm" @click="openLivreM(l)">Modifier</button><button class="btn btn-danger btn-sm" @click="delLivre(l.id)">Suppr.</button></td></tr></tbody></table></div>
+<div v-else class="table-wrap"><table><thead><tr><th>#</th><th>Titre</th><th>Auteur</th><th>ISBN</th><th>Année</th><th>Qté</th><th>Disponibles</th><th v-if="isAdmin">Actions</th></tr></thead>
+<tbody><tr v-for="l in fLiv" :key="l.id"><td>{{ l.id }}</td><td><strong>{{ l.titre }}</strong></td><td>{{ l.auteur }}</td><td><span class="mono">{{ l.isbn }}</span></td><td>{{ l.annee||'—' }}</td><td>{{ l.quantite }}</td><td><span class="badge" :class="l.disponible>0?'badge-green':'badge-red'"><span class="badge-dot"></span>{{ l.disponible }}/{{ l.quantite }}</span></td><td v-if="isAdmin" class="actions"><button class="btn btn-ghost btn-sm" @click="openLivreM(l)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4z"/></svg>Modifier</button><button class="btn btn-danger btn-sm" @click="delLivre(l.id)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/></svg>Suppr.</button></td></tr></tbody></table></div></div>
 </section>
 
 <!-- UTILISATEURS -->
@@ -223,10 +259,10 @@ table{width:100%;border-collapse:collapse}thead tr{background:var(--light)}thead
 <div class="page-header fade-up"><div><h2>Utilisateurs</h2><p>Membres inscrits à la bibliothèque</p></div></div>
 <div class="action-bar fade-up d1"><button class="btn btn-dit btn-sm" style="width:auto;padding:10px 24px" @click="openUserM()">+ Créer un accès utilisateur</button></div>
 <div class="card fade-up d2"><div class="card-header"><h3>Liste des membres</h3></div>
-<div v-if="uLoad" class="loader">Chargement</div>
+<div v-if="uLoad" class="skeleton"><div class="skel-row" v-for="n in 6" :key="n"><span class="skel-bar" style="width:6%"></span><span class="skel-bar" style="width:22%"></span><span class="skel-bar" style="width:26%"></span><span class="skel-bar" style="width:16%"></span><span class="skel-bar" style="width:10%"></span><span class="skel-bar" style="width:10%"></span></div></div>
 <div v-else-if="usrs.length===0" class="empty"><p>Aucun membre</p></div>
-<table v-else><thead><tr><th>#</th><th>Nom</th><th>Email</th><th>Identifiant</th><th>Type</th><th>Rôle</th><th>Actions</th></tr></thead>
-<tbody><tr v-for="u in usrs" :key="u.id"><td>{{ u.id }}</td><td><strong>{{ u.prenom }} {{ u.nom }}</strong></td><td>{{ u.email }}</td><td><span class="mono">{{ u.matricule||u.piece_identite_numero||'—' }}</span></td><td><span class="badge badge-dit">{{ tLabel(u.type) }}</span></td><td><span class="badge" :class="u.role==='admin'?'badge-amber':'badge-navy'">{{ u.role }}</span></td><td class="actions"><button class="btn btn-ghost btn-sm" @click="openEditUser(u)">Modifier</button><button v-if="u.id!==user.id" class="btn btn-danger btn-sm" @click="delUser(u.id)">Suppr.</button><span v-else style="font-size:11px;color:var(--muted);padding:4px 8px">Vous</span></td></tr></tbody></table></div>
+<div v-else class="table-wrap"><table><thead><tr><th>#</th><th>Nom</th><th>Email</th><th>Identifiant</th><th>Type</th><th>Rôle</th><th>Actions</th></tr></thead>
+<tbody><tr v-for="u in usrs" :key="u.id"><td>{{ u.id }}</td><td><strong>{{ u.prenom }} {{ u.nom }}</strong></td><td>{{ u.email }}</td><td><span class="mono">{{ u.matricule||u.piece_identite_numero||'—' }}</span></td><td><span class="badge badge-dit">{{ tLabel(u.type) }}</span></td><td><span class="badge" :class="u.role==='admin'?'badge-amber':'badge-navy'">{{ u.role }}</span></td><td class="actions"><button class="btn btn-ghost btn-sm" @click="openEditUser(u)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4z"/></svg>Modifier</button><button v-if="u.id!==user.id" class="btn btn-danger btn-sm" @click="delUser(u.id)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/></svg>Suppr.</button><span v-else style="font-size:11px;color:var(--muted);padding:4px 8px">Vous</span></td></tr></tbody></table></div></div>
 </section>
 
 <!-- EMPRUNTS -->
@@ -240,30 +276,30 @@ table{width:100%;border-collapse:collapse}thead tr{background:var(--light)}thead
     En cours <span :style="'border-radius:99px;padding:1px 8px;font-size:11px;margin-left:4px;color:white;background:'+(empTab==='encours'?'rgba(255,255,255,0.3)':'var(--dit)')">{{ empListEnCours.length }}</span>
   </button>
   <button v-if="isAdmin" class="btn btn-sm" :class="empTab==='attente'?'btn-dit':'btn-ghost'" style="width:auto;position:relative" @click="empTab='attente'">
-    En attente <span :style="'border-radius:99px;padding:1px 8px;font-size:11px;margin-left:4px;color:white;background:'+(empTab==='attente'?'rgba(255,255,255,0.3)':'#f59e0b')">{{ empListAttente.length }}</span>
-    <span v-if="empListAttente.length>0&&empTab!=='attente'" style="position:absolute;top:-4px;right:-4px;background:#ef4444;color:white;border-radius:99px;font-size:9px;font-weight:700;padding:1px 5px">!</span>
+    En attente <span :style="'border-radius:99px;padding:1px 8px;font-size:11px;margin-left:4px;color:white;background:'+(empTab==='attente'?'rgba(255,255,255,0.3)':'var(--amber)')">{{ empListAttente.length }}</span>
+    <span v-if="empListAttente.length>0&&empTab!=='attente'" style="position:absolute;top:-4px;right:-4px;background:var(--danger);color:white;border-radius:99px;font-size:9px;font-weight:700;padding:1px 5px">!</span>
   </button>
   <button class="btn btn-sm" :class="empTab==='tous'?'btn-dit':'btn-ghost'" style="width:auto" @click="empTab='tous'">
     Tous <span :style="'border-radius:99px;padding:1px 8px;font-size:11px;margin-left:4px;color:white;background:'+(empTab==='tous'?'rgba(255,255,255,0.3)':'var(--muted)')">{{ empList.length }}</span>
   </button>
 </div>
 </div>
-<div v-if="eLoad" class="loader">Chargement</div>
+<div v-if="eLoad" class="skeleton"><div class="skel-row" v-for="n in 6" :key="n"><span class="skel-bar" style="width:5%"></span><span class="skel-bar" style="width:18%"></span><span class="skel-bar" style="width:18%"></span><span class="skel-bar" style="width:14%"></span><span class="skel-bar" style="width:14%"></span><span class="skel-bar" style="width:12%"></span></div></div>
 <div v-else-if="empTabList.length===0" class="empty"><p>{{ empTab==='attente'?'Aucune demande en attente':empTab==='encours'?'Aucun emprunt en cours':'Aucun emprunt' }}</p></div>
-<table v-else><thead><tr><th>#</th><th>Membre</th><th>Livre</th><th>Emprunt</th><th>Retour prévu</th><th>Statut</th><th v-if="isAdmin">Action</th></tr></thead>
+<div v-else class="table-wrap"><table><thead><tr><th>#</th><th>Membre</th><th>Livre</th><th>Emprunt</th><th>Retour prévu</th><th>Statut</th><th v-if="isAdmin">Action</th></tr></thead>
 <tbody><tr v-for="e in empTabList" :key="e.id"><td>{{ e.id }}</td><td><strong>{{ e._m }}</strong></td><td>{{ e._l }}</td><td>{{ e.date_emprunt }}</td><td>{{ e.date_retour_prevue }}</td>
 <td><span v-if="!e.valide" class="badge badge-amber"><span class="badge-dot"></span>En attente</span><span v-else-if="e.date_retour_reelle" class="badge" :class="e.retard?'badge-amber':'badge-green'"><span class="badge-dot"></span>{{ e.retard?'Rendu en retard':'Rendu' }}</span><span v-else-if="isLate(e)" class="badge badge-red"><span class="badge-dot"></span>En retard (+{{ lateDays(e) }}j)</span><span v-else class="badge badge-dit"><span class="badge-dot"></span>En cours</span></td>
 <td v-if="isAdmin" style="display:flex;gap:6px;flex-wrap:wrap">
   <button v-if="!e.valide" class="btn btn-dit btn-sm" style="width:auto" @click="validerEmprunt(e.id)">✓ Valider</button>
   <button v-if="e.valide&&!e.date_retour_reelle" class="btn btn-success btn-sm" style="width:auto" @click="retourner(e.id)">Retour</button>
-</td></tr></tbody></table></div>
+</td></tr></tbody></table></div></div>
 </section>
 <section v-if="pg==='retards'&&isAdmin">
 <div class="page-header fade-up"><div><h2>Retards</h2><p>Livres non retournés dans les délais</p></div></div>
 <div class="card fade-up d2"><div class="card-header"><h3>Emprunts en retard</h3></div>
 <div v-if="rets.length===0" class="empty"><p>Aucun retard — tout est en ordre !</p></div>
-<table v-else><thead><tr><th>#</th><th>Membre</th><th>Livre</th><th>Retour prévu</th><th>Jours de retard</th><th>Action</th></tr></thead>
-<tbody><tr v-for="e in rets" :key="e.id"><td>{{ e.id }}</td><td><strong>{{ e._m }}</strong></td><td>{{ e._l }}</td><td>{{ e.date_retour_prevue }}</td><td><span class="badge badge-red"><span class="badge-dot"></span>+{{ lateDays(e) }} jours</span></td><td><button class="btn btn-success btn-sm" style="width:auto" @click="retourner(e.id)">Enregistrer le retour</button></td></tr></tbody></table></div>
+<div v-else class="table-wrap"><table><thead><tr><th>#</th><th>Membre</th><th>Livre</th><th>Retour prévu</th><th>Jours de retard</th><th>Action</th></tr></thead>
+<tbody><tr v-for="e in rets" :key="e.id"><td>{{ e.id }}</td><td><strong>{{ e._m }}</strong></td><td>{{ e._l }}</td><td>{{ e.date_retour_prevue }}</td><td><span class="badge badge-red"><span class="badge-dot"></span>+{{ lateDays(e) }} jours</span></td><td><button class="btn btn-success btn-sm" style="width:auto" @click="retourner(e.id)">Enregistrer le retour</button></td></tr></tbody></table></div></div>
 </section>
 
 </main></div></template>
@@ -303,7 +339,7 @@ table{width:100%;border-collapse:collapse}thead tr{background:var(--light)}thead
 <div class="modal-actions"><button class="btn btn-ghost" @click="modal=null">Annuler</button><button class="btn btn-dit" style="width:auto" @click="saveEmp">Confirmer l'emprunt</button></div></div></div>
 
 <div class="overlay" v-if="modal==='changerMdp'" style="z-index:9999"><div class="modal"><h3 style="color:var(--danger)">🔒 Changement de mot de passe requis</h3><p style="font-size:13px;color:var(--muted);margin-bottom:16px">Votre compte a été créé avec un mot de passe temporaire. Vous devez le modifier avant de continuer.</p><div class="form-group"><label class="form-label">Mot de passe temporaire *</label><input class="form-input" v-model="mdpF.ancien" type="password" placeholder="Mot de passe reçu"></div><div class="form-group"><label class="form-label">Nouveau mot de passe *</label><input class="form-input" v-model="mdpF.nouveau" type="password" placeholder="Minimum 6 caractères"></div><div class="form-group"><label class="form-label">Confirmer le nouveau mot de passe *</label><input class="form-input" v-model="mdpF.confirm" type="password" placeholder="Retapez le nouveau mot de passe" @keyup.enter="doChangerMdp"></div><p v-if="mdpErr" style="color:var(--danger);font-size:12px;margin-top:4px">{{ mdpErr }}</p><div class="modal-actions"><button class="btn btn-dit" style="width:auto" @click="doChangerMdp" :disabled="mdpLoad">{{ mdpLoad?'Enregistrement...':'Changer mon mot de passe' }}</button></div></div></div>
-<div class="toast-container"><div v-for="t in toasts" :key="t.id" class="toast" :class="t.type">{{ t.msg }}</div></div>
+<div class="toast-container"><div v-for="t in toasts" :key="t.id" class="toast" :class="t.type" role="status"><span class="toast-ic"><svg v-if="t.type==='error'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg><svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>{{ t.msg }}</div></div>
 </div>
 
 <script>
@@ -315,6 +351,9 @@ function U(s){return location.protocol+'//'+location.hostname+':'+P[s]}
 
 createApp({setup(){
 const LOGO=ref('data:image/svg+xml;base64,'+btoa(LOGO_SVG));
+const theme=ref(localStorage.getItem('theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
+document.documentElement.setAttribute('data-theme',theme.value);
+function toggleTheme(){theme.value=theme.value==='dark'?'light':'dark';localStorage.setItem('theme',theme.value);document.documentElement.setAttribute('data-theme',theme.value)}
 const user=ref(null),token=ref(null),pg=ref('dashboard'),sideOpen=ref(false),modal=ref(null),toasts=ref([]);let tid=0;
 
 async function api(s,p,m='GET',b=null){
@@ -498,7 +537,7 @@ async function retourner(id){if(!confirm('Confirmer le retour de ce livre ?'))re
 
 onMounted(()=>{const t=localStorage.getItem('bt'),u=localStorage.getItem('bu');if(t&&u){try{token.value=t;user.value=JSON.parse(u);ldDash()}catch(e){}}});
 
-return{LOGO,user,token,pg,sideOpen,modal,toasts,authMode,authErr,authLoad,showForgot,loginF,regF,livres,usrs,emps,empList,empListEnCours,empListAttente,empTabList,empTab,rets,retC,lLoad,uLoad,eLoad,lQ,autoValid,ds,mL,mU,mUE,mE,myEmps,myS,isAdmin,uInit,roleLabel,fDate,fLiv,livDispo,toast,tLabel,isLate,lateDays,go,doLogin,doRegister,logout,ldLiv,ldUsr,ldEmp,ldRet,ldDash,openLivreM,saveLivre,delLivre,openUserM,saveUser,delUser,openEditUser,saveEditUser,openEmpM,saveEmp,retourner,validerEmprunt,toggleAutoValid,mdpF,mdpErr,mdpLoad,doChangerMdp}
+return{LOGO,theme,toggleTheme,user,token,pg,sideOpen,modal,toasts,authMode,authErr,authLoad,showForgot,loginF,regF,livres,usrs,emps,empList,empListEnCours,empListAttente,empTabList,empTab,rets,retC,lLoad,uLoad,eLoad,lQ,autoValid,ds,mL,mU,mUE,mE,myEmps,myS,isAdmin,uInit,roleLabel,fDate,fLiv,livDispo,toast,tLabel,isLate,lateDays,go,doLogin,doRegister,logout,ldLiv,ldUsr,ldEmp,ldRet,ldDash,openLivreM,saveLivre,delLivre,openUserM,saveUser,delUser,openEditUser,saveEditUser,openEmpM,saveEmp,retourner,validerEmprunt,toggleAutoValid,mdpF,mdpErr,mdpLoad,doChangerMdp}
 }}).mount('#app');
 </script>
 </body>
